@@ -32,7 +32,9 @@ export const teamsRouter = createTRPCRouter({
 const createPlayerSchema = z.object({ name: z.string().min(1), teamId: z.number().optional(), image: z.string() });
 
 export const playersRouter = createTRPCRouter({
-    getAll: publicProcedure.query(({ ctx }) => (ctx.db.player.findMany())),
+    getAll: publicProcedure.query(({ ctx }) => (ctx.db.player.findMany({
+        include: { team: true }
+    }))),
     create: publicProcedure
         .input(createPlayerSchema)
         .mutation(({ ctx, input }) => (ctx.db.player.create(

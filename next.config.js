@@ -12,6 +12,18 @@ const config = {
     eslint: {
         ignoreDuringBuilds: true,
     },
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'placehold.co',
+            },
+            {
+                protocol: 'https',
+                hostname: 'imgur.com',
+            }
+        ],
+    },
 };
 
 export default config;

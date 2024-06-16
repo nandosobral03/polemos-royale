@@ -11,6 +11,7 @@ export default function Nav() {
         { path: "/", name: "Home", icon: "home" },
         { path: "/about", name: "About", icon: "info" },
         { path: "/teams", name: "Teams", icon: "users" },
+        { path: "/players", name: "Players", icon: "users" },
         { path: "/stats", name: "Stats", icon: "chart-bar" },
     ]
     return (
