@@ -38,6 +38,8 @@
     "next-themes": "^0.3.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
+    "react-dropzone": "^14.2.3",
+    "react-papaparse": "^4.4.0",
     "server-only": "^0.0.1",
     "superjson": "^2.2.1",
     "tailwind-merge": "^2.3.0",

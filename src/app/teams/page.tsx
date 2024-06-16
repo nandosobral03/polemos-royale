@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import CreateTeamButton from "../_components/create-team-button";
 import TeamCard from "../_components/team-card";
 import { UploadIcon } from "@radix-ui/react-icons";
+import UploadTeamsButton from "../_components/upload-teams";
 import { api } from "@/trpc/server"
 
 export default async function Teams() {
@@ -10,14 +11,12 @@ export default async function Teams() {
     const freeAgents = await api.players.getAllPlayersWithNoTeam();
     return (
         <div className="flex min-h-screen flex-col gap-12 px-4 py-8">
-            <div className="flex w-full justify-between">
+            <div className="flex w-full justify-between gap-2">
                 <h1 className="text-xl font-medium tracking-tight sm:text-[2rem] grow">
                     Teams
                 </h1>
                 <CreateTeamButton players={freeAgents} sponsors={sponsors} />
-                <Button className="ml-2" variant="default" size="sm">
-                    <UploadIcon />
-                </Button>
+                <UploadTeamsButton />
             </div>
             <div className="flex flex-wrap gap-4 justify-center">
                 {teams.map((team) => (

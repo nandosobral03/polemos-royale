@@ -26,7 +26,34 @@ export const teamsRouter = createTRPCRouter({
         .mutation(async ({ ctx, input }) => {
             await ctx.db.player.updateMany({ where: { teamId: input.id }, data: { teamId: null } });
             await ctx.db.player.updateMany({ where: { id: { in: input.players } }, data: { teamId: input.id } });
+        }),
+    massUploadTeams: publicProcedure
+        .input(z.object({
+            players: z.array(z.object({ name: z.string().min(1), image: z.string(), teamName: z.string().optional() })),
+            teams: z.array(z.object({ name: z.string().min(1), sponsorName: z.string().optional() })),
+            sponsors: z.array(z.object({ name: z.string().min(1) }))
+        }))
+        .mutation(async ({ ctx, input }) => {
+            await ctx.db.team.deleteMany({});
+            await ctx.db.player.deleteMany({});
+            await ctx.db.sponsor.deleteMany({});
+
+            const sponsors = await ctx.db.sponsor.createManyAndReturn({
+                data: input.sponsors.map(s => ({ name: s.name, image: "https://via.placeholder.com/150" }))
+            });
+
+            const teamsToCreate = input.teams.map(t => ({ name: t.name, sponsorId: sponsors.find(s => s.name === t.sponsorName)?.id ?? null }));
+
+            const teams = await ctx.db.team.createManyAndReturn({
+                data: teamsToCreate.map(t => ({ name: t.name, sponsorId: t.sponsorId }))
+            });
+
+            const players = input.players.map(p => ({ name: p.name, image: p.image, teamId: teams.find(t => t.name === p.teamName)?.id ?? null }));
+            await ctx.db.player.createMany(
+                { data: players }
+            );
         })
+
 });
 
 const createPlayerSchema = z.object({ name: z.string().min(1), teamId: z.number().optional(), image: z.string() });
