@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+model Team {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  players   Player[]
+  sponsor   Sponsor? @relation(fields: [sponsorId], references: [id])
+  sponsorId Int?
+}
+
+model Player {
+  id              Int               @id @default(autoincrement())
+  name            String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  image           String
+  teamId          Int?
+  team            Team?              @relation(fields: [teamId], references: [id])
+  playedGame      Game[]
+  playerDayStatus PlayerDayStatus[]
+  gameEventLog    GameEventLog[]
+}
+
+model Sponsor {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  image     String
+  teams     Team[]
+}
+
+model MapSquareSchematic {
+  id            Int         @id @default(autoincrement())
+  description   String
+  events        GameEvent[]
+  usedInSquares MapSquare[]
+}
+
+model MapHazardSchematic {
+  id            Int         @id @default(autoincrement())
+  description   String
+  events        GameEvent[]
+  usedInSquares MapSquare[]
+}
+
+model MapSquare {
+  id                   Int                  @id @default(autoincrement())
+  mapSquareSchematicId Int
+  mapSquareSchematic   MapSquareSchematic   @relation(fields: [mapSquareSchematicId], references: [id])
+  mapHazards           MapHazardSchematic[]
+  x                    Int
+  y                    Int
+  gameId               Int
+  game                 Game                 @relation(fields: [gameId], references: [id])
+}
+
+model GameEvent {
+  id                Int                  @id @default(autoincrement())
+  numberOfAttackers Int
+  numberOfDefenders Int
+  hpChangeAttackers Int
+  hpChangeDefenders Int
+  description       String
+  locations         MapSquareSchematic[]
+  hazards           MapHazardSchematic[]
+}
+
+model Game {
+  id         Int          @id @default(autoincrement())
+  createdAt  DateTime     @default(now())
+  mapSquares MapSquare[]
+  players    Player[]
+  gameDayLog GameDayLog[]
+}
+
+model GameDayLog {
+  id             Int               @id @default(autoincrement())
+  gameId         Int
+  game           Game              @relation(fields: [gameId], references: [id])
+  day            Int
+  createdAt      DateTime          @default(now())
+  playerStatuses PlayerDayStatus[]
+  eventLogs      GameEventLog[]
+
+  @@unique([gameId, day])
+}
+
+model PlayerDayStatus {
+  id          Int          @id @default(autoincrement())
+  playerId    Int
+  player      Player       @relation(fields: [playerId], references: [id])
+  health      Int
+  gameId      Int
+  gameDayLogs GameDayLog[]
+}
+
+model GameEventLog {
+  id                        Int      @id @default(autoincrement())
+  playersInvolved           Player[]
+  completedEventDescription String
+  GameDayLog   GameDayLog @relation(fields: [gameDayLogId], references: [id])
+  gameDayLogId Int
+}
