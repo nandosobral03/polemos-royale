@@ -1,0 +1,277 @@
+"use client";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  ExclamationTriangleIcon,
+  PlusCircledIcon,
+} from "@radix-ui/react-icons";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+
+export default function CreateEventButton() {
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const [event, setEvent] = useState<{
+    description: string;
+    numberOfAttackers: number;
+    numberOfDefenders: number;
+    hpChangeAttackers: string;
+    hpChangeDefenders: string;
+  }>({
+    description: "",
+    numberOfAttackers: 0,
+    numberOfDefenders: 0,
+    hpChangeAttackers: "",
+    hpChangeDefenders: "",
+  });
+
+  const handleOpenClose = (bool: boolean) => {
+    if (!bool)
+      setEvent({
+        description: "",
+        numberOfAttackers: 0,
+        numberOfDefenders: 0,
+        hpChangeAttackers: "",
+        hpChangeDefenders: "",
+      });
+    setOpen(bool);
+  };
+
+  const createEventMutation = api.events.create.useMutation();
+  const handleCreateEvent = async () => {
+    await createEventMutation.mutateAsync({
+      description: event.description,
+      numberOfAttackers: event.numberOfAttackers,
+      numberOfDefenders: event.numberOfDefenders,
+      hpChangeAttackers: parseInt(event.hpChangeAttackers ?? ""),
+      hpChangeDefenders: parseInt(event.hpChangeAttackers ?? ""),
+    });
+    toast({
+      title: "Event created",
+      description: "The event has been created",
+    });
+    router.refresh();
+    handleOpenClose(false);
+  };
+
+  const generateExampleEventDescription = () => {
+    let initialDescription = event.description;
+    for (let i = 0; i < event.numberOfAttackers; i++) {
+      initialDescription = initialDescription.replaceAll(
+        `a${i + 1}`,
+        `<span class="text-red-500">Attacker #${i + 1}</span>`,
+      );
+    }
+    for (let i = 0; i < event.numberOfDefenders; i++) {
+      initialDescription = initialDescription.replaceAll(
+        `d${i + 1}`,
+        `<span class="text-green-500">Defender #${i + 1}</span>`,
+      );
+    }
+    return (
+      <span dangerouslySetInnerHTML={{ __html: initialDescription }}></span>
+    );
+  };
+
+  const calculatedPlayers = () => {
+    const attackers = event.description.matchAll(/a\d+/g);
+    const defenders = event.description.matchAll(/d\d+/g);
+    const uniqueAttackers = [...new Set(Array.from(attackers))];
+    const uniqueDefenders = [...new Set(Array.from(defenders))];
+    return {
+      attackers: uniqueAttackers.length,
+      defenders: uniqueDefenders.length,
+    };
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <Button variant="default" size="sm" onClick={() => handleOpenClose(true)}>
+        <PlusCircledIcon />
+      </Button>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle> Create a new event</DialogTitle>
+        </DialogHeader>
+        <DialogDescription className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
+            <label htmlFor="name">Description</label>
+            <Textarea
+              placeholder="Type your message here."
+              value={event.description}
+              onChange={(e) =>
+                setEvent({ ...event, description: e.target.value })
+              }
+            />
+          </div>
+          <div className="flex gap-4">
+            <div className="flex grow flex-col gap-1">
+              <label htmlFor="numberOfAttackers">Number of attackers</label>
+              <Input
+                id="numberOfAttackers"
+                placeholder="Type your message here."
+                autoComplete="off"
+                value={event.numberOfAttackers}
+                onChange={(e) =>
+                  setEvent({
+                    ...event,
+                    numberOfAttackers: parseInt(e.target.value ?? "0"),
+                  })
+                }
+              />
+            </div>
+            <div className="flex grow flex-col gap-1">
+              <label htmlFor="numberOfDefenders">Number of defenders</label>
+              <Input
+                id="numberOfDefenders"
+                placeholder="Type your message here."
+                autoComplete="off"
+                value={event.numberOfDefenders}
+                onChange={(e) =>
+                  setEvent({
+                    ...event,
+                    numberOfDefenders: parseInt(e.target.value ?? "0"),
+                  })
+                }
+              />
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="flex grow flex-col gap-1">
+              Attackers HP change
+              <Input
+                id="numberOfAttackers"
+                placeholder="Type your message here."
+                autoComplete="off"
+                value={event.hpChangeAttackers}
+                onChange={(e) =>
+                  setEvent({
+                    ...event,
+                    hpChangeAttackers: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="flex grow flex-col gap-1">
+              Defenders HP change
+              <Input
+                id="numberOfAttackers"
+                placeholder="Type your message here."
+                autoComplete="off"
+                value={event.hpChangeDefenders}
+                type="number"
+                onChange={(e) =>
+                  setEvent({
+                    ...event,
+                    hpChangeDefenders: e.target.value,
+                  })
+                }
+              />
+            </div>
+          </div>
+          <Separator />
+          {generateExampleEventDescription()}
+          <Separator />
+          <div className="flex flex-col gap-2">
+            {parseInt(event.hpChangeAttackers) != 0 &&
+              event.numberOfAttackers > 0 && (
+                <span>
+                  Attackers HP change:{" "}
+                  {parseInt(event.hpChangeAttackers) > 0 ? (
+                    <span className="text-green-500">
+                      +{event.hpChangeAttackers}
+                    </span>
+                  ) : (
+                    <span className="text-red-500">
+                      {event.hpChangeAttackers}
+                    </span>
+                  )}
+                </span>
+              )}
+            {parseInt(event.hpChangeDefenders) != 0 &&
+              event.numberOfDefenders > 0 && (
+                <span>
+                  Defenders HP change:{" "}
+                  {parseInt(event.hpChangeDefenders) > 0 ? (
+                    <span className="text-green-500">
+                      +{event.hpChangeDefenders}
+                    </span>
+                  ) : (
+                    <span className="text-red-500">
+                      {event.hpChangeDefenders}
+                    </span>
+                  )}
+                </span>
+              )}
+          </div>
+          {(calculatedPlayers().attackers !== event.numberOfAttackers ||
+            calculatedPlayers().defenders !== event.numberOfDefenders) && (
+            <>
+              <Separator />
+
+              <div className="flex items-center gap-2">
+                <ExclamationTriangleIcon className="h-5 w-5" />
+                <span>
+                  Player count mismatch.
+                  <br />
+                  {calculatedPlayers().attackers !==
+                    event.numberOfAttackers && (
+                    <>
+                      Calculated {calculatedPlayers().attackers} attackers, but
+                      got {event.numberOfAttackers}.
+                      <br />
+                    </>
+                  )}
+                  {calculatedPlayers().defenders !==
+                    event.numberOfDefenders && (
+                    <>
+                      Calculated {calculatedPlayers().defenders} defenders, but
+                      got {event.numberOfDefenders}.
+                      <br />
+                    </>
+                  )}
+                </span>
+              </div>
+            </>
+          )}
+        </DialogDescription>
+        <DialogFooter>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleOpenClose(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => handleCreateEvent()}
+            disabled={
+              createEventMutation.isPending ||
+              calculatedPlayers().attackers !== event.numberOfAttackers ||
+              calculatedPlayers().defenders !== event.numberOfDefenders
+            }
+          >
+            Create
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

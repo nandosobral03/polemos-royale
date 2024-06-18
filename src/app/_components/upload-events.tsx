@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Dialog,
   DialogContent,
@@ -14,8 +15,9 @@ import { api } from "@/trpc/react";
 import { usePapaParse } from "react-papaparse";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { type GameEvent } from "@prisma/client";
 
-export default function UploadTeamsButton() {
+export default function UploadEventsButton() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const [file, setFile] = useState<File | null>(null);
@@ -29,7 +31,7 @@ export default function UploadTeamsButton() {
     }
   };
 
-  const massCreateMutation = api.teams.massUploadTeams.useMutation();
+  const massCreateMutation = api.events.massUploadEvents.useMutation();
   const handleCreateTeam = async () => {
     if (!file) return;
     const csv = await file.text();
@@ -37,57 +39,52 @@ export default function UploadTeamsButton() {
       worker: true,
       complete: (results: { data: string[][] }) => {
         const data = results.data.slice(1);
-        const acc = data.reduce(
-          (
-            acc: {
-              teams: {
-                name: string;
-                sponsorName: string | undefined;
-              }[];
-              players: {
-                name: string;
-                teamName: string;
-                image: string;
-              }[];
-              sponsors: { name: string }[];
-            },
-            row: string[],
-          ) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const [_number, _teamNumber, teamName, name, image, sponsorName] =
-              row;
-
-            if (!teamName || !name || !image) {
-              return acc;
+        const allEvents: Omit<GameEvent, "id">[] = data
+          .map((row) => {
+            const [numAttackers, numDefenders, dmgAV, dmgVA, description] = row;
+            if (
+              numAttackers === undefined ||
+              numDefenders === undefined ||
+              dmgAV === undefined ||
+              dmgVA === undefined ||
+              description === undefined
+            )
+              return null;
+            let curr = 1;
+            let descriptionString = description;
+            for (let i = 0; i < parseInt(numAttackers); i++) {
+              descriptionString = descriptionString.replaceAll(
+                `p${curr}`,
+                `a${i + 1}`,
+              );
+              curr++;
+            }
+            for (let i = 0; i < parseInt(numDefenders); i++) {
+              descriptionString = descriptionString.replaceAll(
+                `p${curr}`,
+                `d${i + 1}`,
+              );
+              curr++;
             }
 
-            acc.players.push({ name, teamName, image });
-            if (sponsorName) {
-              if (!acc.teams.find((t) => t.name === teamName)) {
-                acc.teams.push({ name: teamName, sponsorName });
-              }
-              if (!acc.sponsors.find((s) => s.name === sponsorName)) {
-                acc.sponsors.push({ name: sponsorName });
-              }
-            } else {
-              if (!acc.teams.find((t) => t.name === teamName)) {
-                acc.teams.push({ name: teamName, sponsorName: undefined });
-              }
-            }
+            return {
+              numberOfAttackers: parseInt(numAttackers),
+              numberOfDefenders: parseInt(numDefenders),
+              hpChangeAttackers: -parseInt(dmgAV),
+              hpChangeDefenders: -parseInt(dmgVA),
+              description: descriptionString,
+            };
+          })
+          .filter((e) => e !== null);
 
-            return acc;
-          },
-          { teams: [], players: [], sponsors: [] },
-        );
-
-        massCreateMutation.mutate(acc, {
+        massCreateMutation.mutate(allEvents, {
           onSuccess: () => {
             setOpen(false);
             setFile(null);
             window.location.reload();
             toast({
-              title: "Teams created",
-              description: "The teams have been created",
+              title: "Events created",
+              description: "The events have been created",
             });
           },
         });
@@ -102,7 +99,7 @@ export default function UploadTeamsButton() {
       </Button>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle> Upload Teams CSV</DialogTitle>
+          <DialogTitle> Upload Events CSV</DialogTitle>
         </DialogHeader>
         <Dropzone onDrop={(acceptedFiles) => setFile(acceptedFiles[0] ?? null)}>
           {({ getRootProps, getInputProps }) => (
