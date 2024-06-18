@@ -25,7 +25,13 @@ export default function Nav() {
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
           <a href="/">
-            <Image src="/logo.svg" className="h-10 w-auto" alt="Logo" />
+            <Image
+              src="/logo.svg"
+              className="h-10 w-auto"
+              alt="Logo"
+              width={40}
+              height={40}
+            />
           </a>
           <NavigationMenu className="flex items-center gap-2">
             {routes.map((route) => (
