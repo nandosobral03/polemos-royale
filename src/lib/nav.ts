@@ -75,4 +75,19 @@ export const routes: {
       },
     ],
   },
+  {
+    path: "/play",
+    name: "Play",
+    icon: "game-play",
+    description: "Simulate a game and see how fate decides the outcome",
+    children: [
+      {
+        path: "/history",
+        name: "History",
+        icon: "history",
+        description:
+          "See the history of past games and who won, who died first and every single event that occurred",
+      },
+    ],
+  },
 ];

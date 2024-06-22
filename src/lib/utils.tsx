@@ -1,3 +1,4 @@
+import { GameLocationConfigType } from "@/app/_components/game-config";
 import { GameEvent } from "@prisma/client";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -27,3 +28,21 @@ export const generateExampleEventDescription = (event: GameEvent) => {
     ></span>
   );
 };
+
+export function getRandomElement<T>(array: T[]): T {
+  if (array[0]) {
+    return array[Math.floor(Math.random() * array.length)] ?? array[0];
+  }
+  throw new Error("Array is empty");
+}
+
+export function areSameHexagons(
+  hexagon1: { q: number; r: number; s: number },
+  hexagon2: { q: number; r: number; s: number },
+) {
+  return (
+    hexagon1.q === hexagon2.q &&
+    hexagon1.r === hexagon2.r &&
+    hexagon1.s === hexagon2.s
+  );
+}
