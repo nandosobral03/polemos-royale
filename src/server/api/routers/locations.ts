@@ -55,3 +55,57 @@ export const locationsRouter = createTRPCRouter({
       });
     }),
 });
+
+const createHazardSchema = z.object({
+  name: z.string(),
+});
+
+export const hazardsRouter = createTRPCRouter({
+  getAll: publicProcedure.query(({ ctx }) =>
+    ctx.db.mapHazardSchematic.findMany({
+      include: {
+        events: true,
+      },
+    }),
+  ),
+  create: publicProcedure
+    .input(createHazardSchema)
+    .mutation(({ ctx, input }) => {
+      return ctx.db.mapHazardSchematic.create({
+        data: input,
+      });
+    }),
+  delete: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.db.mapHazardSchematic.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
+  update: publicProcedure
+    .input(createHazardSchema.extend({ id: z.number() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.db.mapHazardSchematic.update({
+        where: {
+          id: input.id,
+        },
+        data: input,
+      });
+    }),
+  setHazardEvents: publicProcedure
+    .input(z.object({ id: z.number(), events: z.array(z.number()) }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.mapHazardSchematic.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          events: {
+            set: input.events.map((e) => ({ id: e })),
+          },
+        },
+      });
+    }),
+});

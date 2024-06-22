@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { GameEvent } from "@prisma/client";
+import { GameEvent, type Player, type Sponsor } from "@prisma/client";
 import {
   ListBulletIcon,
   PlusCircledIcon,
@@ -23,62 +23,67 @@ import {
 } from "@/components/ui/select";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { api, RouterOutputs } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { generateExampleEventDescription } from "@/lib/utils";
 
-export default function LocationEventButtons({
+export default function HazardEventButtons({
   events,
-  location,
+  hazard,
 }: {
   events: GameEvent[];
-  location: RouterOutputs["locations"]["getAll"][number];
+  hazard: RouterOutputs["hazards"]["getAll"][number];
 }) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
-  const [eventsInLocation, setEventsInLocation] = useState<GameEvent[]>(
-    location.events,
+  const [eventsInHazard, setEventsInHazard] = useState<GameEvent[]>(
+    hazard.events,
   );
-  const remainingEvents = events.filter((e) => !eventsInLocation.includes(e));
+  const [remainingEvents, setRemainingEvents] = useState<GameEvent[]>(
+    events.filter((e) => !eventsInHazard.includes(e)),
+  );
 
   const handleOpenClose = (bool: boolean) => {
     if (bool) setOpen(true);
     else {
       setOpen(false);
-      setEventsInLocation(location.events);
+      setEventsInHazard(hazard.events);
+      setRemainingEvents(events.filter((e) => !eventsInHazard.includes(e)));
     }
   };
 
   const handleAddEvent = (eventId: number) => {
     const selected = events.find((e) => e.id === eventId);
     if (!selected) return;
-    setEventsInLocation([...eventsInLocation, selected]);
+    setEventsInHazard([...eventsInHazard, selected]);
+    setRemainingEvents(events.filter((e) => e.id !== eventId));
   };
 
   const handleDeleteEvent = (eventId: number) => {
-    const selected = eventsInLocation.find((e) => e.id === eventId);
+    const selected = eventsInHazard.find((e) => e.id === eventId);
     if (!selected) return;
-    setEventsInLocation(eventsInLocation.filter((e) => e.id !== eventId));
+    setEventsInHazard(eventsInHazard.filter((e) => e.id !== eventId));
+    setRemainingEvents([...remainingEvents, selected]);
   };
 
-  const setLocationEventsMutation =
-    api.locations.setLocationEvents.useMutation();
+  const setHazardEventsMutation = api.hazards.setHazardEvents.useMutation();
   const utils = api.useUtils();
   const handleSetEvents = async () => {
-    await setLocationEventsMutation.mutateAsync({
-      id: location.id,
-      events: eventsInLocation.map((e) => e.id),
+    await setHazardEventsMutation.mutateAsync({
+      id: hazard.id,
+      events: eventsInHazard.map((e) => e.id),
     });
-    await utils.locations.invalidate();
+    await utils.hazards.invalidate();
     await utils.events.invalidate();
     router.refresh();
     toast({
-      title: "Location updated",
-      description: "The location has been updated",
+      title: "Hazard updated",
+      description: "The hazard has been updated",
     });
     setOpen(false);
   };
@@ -90,14 +95,14 @@ export default function LocationEventButtons({
       </Button>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle> Update Location Events</DialogTitle>
+          <DialogTitle> Update Hazard Events</DialogTitle>
         </DialogHeader>
         <DialogDescription className="flex flex-col gap-2">
           <div className="flex flex-col gap-1">
             <div className="flex max-h-[70vh] flex-col gap-2 overflow-y-auto overflow-x-hidden pr-2">
-              {eventsInLocation.map((event) => (
+              {eventsInHazard.map((event) => (
                 <div
-                  key={`${event.id}-location`}
+                  key={`${event.id}-hazard`}
                   className="flex items-center justify-between gap-2"
                 >
                   {generateExampleEventDescription(event)}
@@ -147,7 +152,7 @@ export default function LocationEventButtons({
             size="sm"
             onClick={() => handleSetEvents()}
             disabled={
-              !eventsInLocation.length || setLocationEventsMutation.isPending
+              !eventsInHazard.length || setHazardEventsMutation.isPending
             }
           >
             Save

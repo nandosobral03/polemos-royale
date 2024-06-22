@@ -35,7 +35,7 @@ export default function CreateTeamButton({
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const [availablePlayers, setAvailablePlayers] = useState<Player[]>(players);
+  const availablePlayers = players.filter((p) => !team.players.includes(p));
   const [team, setTeam] = useState<{
     name: string;
     sponsorId: number | null;
@@ -50,14 +50,12 @@ export default function CreateTeamButton({
     const selected = availablePlayers.find((p) => p.id === id);
     if (!selected) return;
     setTeam({ ...team, players: [...team.players, selected] });
-    setAvailablePlayers((p) => p.filter((p) => p.id !== id));
   };
 
   const handleDeletePlayer = (id: number) => {
     const selected = team.players.find((p) => p.id === id);
     if (!selected) return;
     setTeam({ ...team, players: team.players.filter((p) => p.id !== id) });
-    setAvailablePlayers((p) => [...p, selected]);
   };
 
   const createTeamMutation = api.teams.create.useMutation();
@@ -85,7 +83,6 @@ export default function CreateTeamButton({
         sponsorId: null,
         players: [],
       });
-      setAvailablePlayers(players);
     }
   };
 

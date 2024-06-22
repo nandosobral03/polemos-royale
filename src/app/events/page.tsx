@@ -6,7 +6,6 @@ import PageHeading from "../_components/page-heading";
 
 export default async function Teams() {
   const events = await api.events.getAll();
-
   return (
     <>
       <PageHeading
