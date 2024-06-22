@@ -2,22 +2,23 @@ import { api } from "@/trpc/server";
 import EventsTable from "../_components/events-table";
 import CreateEventButton from "../_components/create-event-button";
 import UploadEventsButton from "../_components/upload-events";
+import PageHeading from "../_components/page-heading";
 
 export default async function Teams() {
   const events = await api.events.getAll();
 
   return (
-    <div className="flex min-h-screen flex-col gap-12 px-4 py-8">
-      <div className="flex w-full justify-between gap-2">
-        <h1 className="grow text-xl font-medium tracking-tight sm:text-[2rem]">
-          Events
-        </h1>
+    <>
+      <PageHeading
+        title="Events"
+        subtitle="Events are the battle royale's most important part, players reenact these events depending on their location on the map and the number of players in the game. Each event has an attacking and defending party of players, and a number of health points that are used to determine the outcome of the event."
+      >
         <CreateEventButton />
         <UploadEventsButton />
-      </div>
+      </PageHeading>
       <div className="flex w-full flex-wrap justify-center gap-4">
         <EventsTable events={events} />
       </div>
-    </div>
+    </>
   );
 }

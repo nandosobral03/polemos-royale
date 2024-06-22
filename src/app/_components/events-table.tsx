@@ -4,14 +4,20 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "@radix-ui/react-icons";
-import { api } from "@/trpc/react";
+import { api, RouterOutputs } from "@/trpc/react";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 import UpdateEventButton from "./update-event-button";
+import { generateExampleEventDescription } from "@/lib/utils";
 
-export default function EventsTable({ events }: { events: GameEvent[] }) {
+export default function EventsTable({
+  events,
+}: {
+  events: RouterOutputs["events"]["getAll"];
+}) {
   const { toast } = useToast();
-  const [allEvents, setEvent] = useState<GameEvent[]>(events);
+  const [allEvents, setEvent] =
+    useState<RouterOutputs["events"]["getAll"]>(events);
 
   useEffect(() => {
     setEvent(events);
@@ -27,29 +33,7 @@ export default function EventsTable({ events }: { events: GameEvent[] }) {
     setEvent((e) => e.filter((event) => event.id !== id));
   };
 
-  const generateExampleEventDescription = (event: GameEvent) => {
-    let initialDescription = event.description;
-    for (let i = 0; i < event.numberOfAttackers; i++) {
-      initialDescription = initialDescription.replaceAll(
-        `a${i + 1}`,
-        `<span class="text-red-500">Attacker #${i + 1}</span>`,
-      );
-    }
-    for (let i = 0; i < event.numberOfDefenders; i++) {
-      initialDescription = initialDescription.replaceAll(
-        `d${i + 1}`,
-        `<span class="text-green-500">Defender #${i + 1}</span>`,
-      );
-    }
-    return (
-      <span
-        dangerouslySetInnerHTML={{ __html: initialDescription }}
-        className="line-clamp-2 max-w-[50vw] text-sm text-gray-200"
-      ></span>
-    );
-  };
-
-  const columns: ColumnDef<GameEvent>[] = [
+  const columns: ColumnDef<RouterOutputs["events"]["getAll"][number]>[] = [
     {
       accessorKey: "id",
       header: "Id",
@@ -79,6 +63,15 @@ export default function EventsTable({ events }: { events: GameEvent[] }) {
     {
       accessorKey: "locations",
       header: "Locations",
+      cell: (info) => (
+        <div className="flex flex-wrap items-center gap-2">
+          {info.row.original.locations.map((location) => (
+            <span className="line-clamp-1 rounded-full bg-gray-200 px-2 py-1 text-xs font-medium text-gray-700">
+              {location.name}
+            </span>
+          ))}
+        </div>
+      ),
     },
     {
       accessorKey: "hazards",

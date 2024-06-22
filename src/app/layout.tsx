@@ -29,7 +29,10 @@ export default function RootLayout({
           <TRPCReactProvider>
             <>
               <Nav />
-              {children}
+              <div className="flex min-h-screen flex-col gap-4 px-4 py-8">
+                {children}
+              </div>
+
               <Toaster />
             </>
           </TRPCReactProvider>

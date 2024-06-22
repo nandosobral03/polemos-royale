@@ -1,4 +1,5 @@
 import CreateTeamButton from "../_components/create-team-button";
+import PageHeading from "../_components/page-heading";
 import TeamCard from "../_components/team-card";
 import UploadTeamsButton from "../_components/upload-teams";
 import { api } from "@/trpc/server";
@@ -8,14 +9,15 @@ export default async function Teams() {
   const sponsors = await api.sponsors.getAll();
   const freeAgents = await api.players.getAllPlayersWithNoTeam();
   return (
-    <div className="flex min-h-screen flex-col gap-12 px-4 py-8">
-      <div className="flex w-full justify-between gap-2">
-        <h1 className="grow text-xl font-medium tracking-tight sm:text-[2rem]">
-          Teams
-        </h1>
+    <>
+      <PageHeading
+        title="Teams"
+        subtitle="Teams are composed of players joined together by some common characteristic which guides them to work together and fight for the same goal."
+      >
         <CreateTeamButton players={freeAgents} sponsors={sponsors} />
         <UploadTeamsButton />
-      </div>
+      </PageHeading>
+
       <div className="flex flex-wrap justify-center gap-4">
         {teams.map((team) => (
           <TeamCard
@@ -26,6 +28,6 @@ export default async function Teams() {
           />
         ))}
       </div>
-    </div>
+    </>
   );
 }

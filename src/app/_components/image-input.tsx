@@ -8,11 +8,13 @@ export default function ImageInput({
   src,
   alt,
   onChange,
+  children,
 }: {
   src: string;
   alt: string;
   onChange: (e: string) => void;
   className?: string;
+  children?: React.ReactNode;
 }) {
   const ref = useRef<HTMLInputElement>(null);
 
@@ -58,14 +60,20 @@ export default function ImageInput({
 
   return (
     <div className="flex items-center gap-2">
-      <div className="relative h-12 w-12 rounded-md">
+      <div
+        className="relative cursor-pointer transition-all hover:scale-110"
+        onClick={() => ref.current?.click()}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={src}
-          alt={alt}
-          className="absolute inset-0 z-0 aspect-square h-12 w-auto cursor-pointer rounded-md object-cover transition-all hover:scale-110"
-          onClick={() => ref.current?.click()}
-        />
+        {children ? (
+          children
+        ) : (
+          <img
+            src={src}
+            alt={alt}
+            className="aspect-square h-12 w-auto rounded-md object-cover"
+          />
+        )}
       </div>
       <input
         type="file"

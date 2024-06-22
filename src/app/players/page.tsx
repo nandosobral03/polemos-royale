@@ -1,21 +1,20 @@
+import PageHeading from "../_components/page-heading";
 import PlayerCard from "../_components/player-card";
-import { api } from "@/trpc/server"
+import { api } from "@/trpc/server";
 
 export default async function Players() {
-    const players = await api.players.getAll();
-    return (
-        <div className="flex min-h-screen flex-col gap-12 px-4 py-8">
-            <div className="flex w-full justify-between">
-                <h1 className="text-xl font-medium tracking-tight sm:text-[2rem] grow">
-                    Players
-                </h1>
-                {/* <CreateTeamButton players={freeAgents} sponsors={sponsors} /> */}
-            </div>
-            <div className="flex flex-wrap gap-4 justify-center">
-                {players.map((player) => (
-                    <PlayerCard key={player.id} player={player} />
-                ))}
-            </div>
-        </div>
-    )
+  const players = await api.players.getAll();
+  return (
+    <>
+      <PageHeading
+        title="Players"
+        subtitle="Players are the characters that take part in the battle royale, each one of them belongs to a team, but don't confuse this for an alliance, each players is out for himself, there is no loyalty or friendship between players, they are just there to fight and win for their own."
+      />
+      <div className="flex flex-wrap justify-center gap-4">
+        {players.map((player) => (
+          <PlayerCard key={player.id} player={player} />
+        ))}
+      </div>
+    </>
+  );
 }

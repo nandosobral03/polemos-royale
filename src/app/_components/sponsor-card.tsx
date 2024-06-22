@@ -56,7 +56,7 @@ export default function SponsorCard({
 
   if (isEditing) {
     return (
-      <Card key={sponsor.id} className="w-full lg:w-1/3 ">
+      <Card key={sponsor.id} className="mr-auto w-full grow lg:w-1/3">
         <CardContent className="flex items-center justify-between gap-3 p-3 pt-3">
           <ImageInput
             src={sponsorImage}
@@ -81,7 +81,10 @@ export default function SponsorCard({
     );
   }
   return (
-    <Card key={sponsor.id} className="w-full lg:w-1/3 ">
+    <Card
+      key={sponsor.id}
+      className="mr-auto w-full grow lg:w-1/3 lg:max-w-[50%]"
+    >
       <CardContent className="flex items-center justify-between gap-3 p-3 pt-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

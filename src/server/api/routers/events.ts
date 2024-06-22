@@ -10,7 +10,14 @@ const createEventSchema = z.object({
 });
 
 export const eventsRouter = createTRPCRouter({
-  getAll: publicProcedure.query(({ ctx }) => ctx.db.gameEvent.findMany()),
+  getAll: publicProcedure.query(({ ctx }) =>
+    ctx.db.gameEvent.findMany({
+      include: {
+        locations: true,
+        hazards: true,
+      },
+    }),
+  ),
   create: publicProcedure
     .input(createEventSchema)
     .mutation(({ ctx, input }) => {

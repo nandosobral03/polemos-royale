@@ -56,7 +56,7 @@ export default function PlayerCard({
 
   if (isEditing) {
     return (
-      <Card key={player.id} className="w-full lg:w-1/3 ">
+      <Card key={player.id} className="w-full grow  lg:w-1/3">
         <CardContent className="flex items-center justify-between gap-3 p-3 pt-3">
           <ImageInput
             src={playerImage}
@@ -81,7 +81,7 @@ export default function PlayerCard({
     );
   }
   return (
-    <Card key={player.id} className="w-full lg:w-1/3 ">
+    <Card key={player.id} className="w-full grow lg:w-1/3">
       <CardContent className="flex items-center justify-between gap-3 p-3 pt-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

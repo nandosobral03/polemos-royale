@@ -48,29 +48,31 @@ model Sponsor {
   teams     Team[]
 }
 
-model MapSquareSchematic {
+model MapLocationSchematic {
   id            Int         @id @default(autoincrement())
-  description   String
+  image         String
+  name   String
   events        GameEvent[]
-  usedInSquares MapSquare[]
+  usedInLocations MapLocation[]
 }
 
 model MapHazardSchematic {
   id            Int         @id @default(autoincrement())
-  description   String
+  name          String
   events        GameEvent[]
-  usedInSquares MapSquare[]
+  usedInLocations MapLocation[]
 }
 
-model MapSquare {
+model MapLocation {
   id                   Int                  @id @default(autoincrement())
-  mapSquareSchematicId Int
-  mapSquareSchematic   MapSquareSchematic   @relation(fields: [mapSquareSchematicId], references: [id])
+  mapLocationSchematicId Int
+  mapLocationSchematic   MapLocationSchematic   @relation(fields: [mapLocationSchematicId], references: [id])
   mapHazards           MapHazardSchematic[]
-  x                    Int
-  y                    Int
   gameId               Int
   game                 Game                 @relation(fields: [gameId], references: [id])
+  q                    Int
+  r                    Int
+  s                    Int
 }
 
 model GameEvent {
@@ -80,14 +82,14 @@ model GameEvent {
   hpChangeAttackers Int
   hpChangeDefenders Int
   description       String
-  locations         MapSquareSchematic[]
+  locations         MapLocationSchematic[]
   hazards           MapHazardSchematic[]
 }
 
 model Game {
   id         Int          @id @default(autoincrement())
   createdAt  DateTime     @default(now())
-  mapSquares MapSquare[]
+  mapLocations MapLocation[]
   players    Player[]
   gameDayLog GameDayLog[]
 }
