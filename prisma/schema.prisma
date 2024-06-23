@@ -33,10 +33,11 @@ model Player {
   updatedAt       DateTime          @updatedAt
   image           String
   teamId          Int?
-  team            Team?              @relation(fields: [teamId], references: [id])
+  team            Team?             @relation(fields: [teamId], references: [id])
   playedGame      Game[]
   playerDayStatus PlayerDayStatus[]
-  gameEventLog    GameEventLog[]
+  attackerOnGame  GameEventLog[]    @relation("GameEventLogAttackers")
+  defenderOnGame  GameEventLog[]    @relation("GameEventLogDefenders")
 }
 
 model Sponsor {
@@ -49,34 +50,35 @@ model Sponsor {
 }
 
 model MapLocationSchematic {
-  id            Int         @id @default(autoincrement())
-  image         String
-  name   String
-  events        GameEvent[]
-  usedInLocations MapLocation[]
+  id              Int         @id @default(autoincrement())
+  image           String
+  name            String
+  events          GameEvent[]
+  usedInLocations MapTile[]
 }
 
 model MapHazardSchematic {
-  id            Int         @id @default(autoincrement())
-  name          String
-  events        GameEvent[]
-  usedInLocations MapLocation[]
+  id              Int         @id @default(autoincrement())
+  name            String
+  events          GameEvent[]
+  usedInLocations MapTile[]
 }
 
-model MapLocation {
-  id                   Int                  @id @default(autoincrement())
-  mapLocationSchematicId Int
-  mapLocationSchematic   MapLocationSchematic   @relation(fields: [mapLocationSchematicId], references: [id])
-  mapHazards           MapHazardSchematic[]
-  gameId               Int
-  game                 Game                 @relation(fields: [gameId], references: [id])
-  q                    Int
-  r                    Int
-  s                    Int
+model MapTile {
+  id                Int                  @id @default(autoincrement())
+  locationId        Int
+  location          MapLocationSchematic @relation(fields: [locationId], references: [id])
+  hazards           MapHazardSchematic[]
+  gameId            Int
+  game              Game                 @relation(fields: [gameId], references: [id])
+  q                 Int
+  r                 Int
+  s                 Int
+  playerDayStatuses PlayerDayStatus[]
 }
 
 model GameEvent {
-  id                Int                  @id @default(autoincrement())
+  id                Int                    @id @default(autoincrement())
   numberOfAttackers Int
   numberOfDefenders Int
   hpChangeAttackers Int
@@ -89,7 +91,7 @@ model GameEvent {
 model Game {
   id         Int          @id @default(autoincrement())
   createdAt  DateTime     @default(now())
-  mapLocations MapLocation[]
+  tiles      MapTile[]
   players    Player[]
   gameDayLog GameDayLog[]
 }
@@ -107,18 +109,23 @@ model GameDayLog {
 }
 
 model PlayerDayStatus {
-  id          Int          @id @default(autoincrement())
-  playerId    Int
-  player      Player       @relation(fields: [playerId], references: [id])
-  health      Int
-  gameId      Int
-  gameDayLogs GameDayLog[]
+  playerId   Int
+  player     Player     @relation(fields: [playerId], references: [id])
+  day        Int
+  health     Int
+  gameId     Int
+  tileId     Int
+  tile       MapTile    @relation(fields: [tileId], references: [id])
+  gameDayLog GameDayLog @relation(fields: [gameId, day], references: [gameId, day])
+
+  @@unique([gameId, playerId, day])
 }
 
 model GameEventLog {
-  id                        Int      @id @default(autoincrement())
-  playersInvolved           Player[]
+  id                        Int        @id @default(autoincrement())
+  attackers                 Player[]   @relation("GameEventLogAttackers")
+  defenders                 Player[]   @relation("GameEventLogDefenders")
   completedEventDescription String
-  GameDayLog   GameDayLog @relation(fields: [gameDayLogId], references: [id])
-  gameDayLogId Int
+  GameDayLog                GameDayLog @relation(fields: [gameDayLogId], references: [id])
+  gameDayLogId              Int
 }

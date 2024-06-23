@@ -11,13 +11,13 @@ import {
 import { type RouterOutputs, api } from "@/trpc/react";
 
 import { Button } from "@/components/ui/button";
-import ImageInput from "./image-input";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import LocationEventButtons from "./location-events-button";
 import { GameEvent } from "@prisma/client";
+import ImageInput from "../utils/image-input";
 
 export default function LocationCard({
   location,

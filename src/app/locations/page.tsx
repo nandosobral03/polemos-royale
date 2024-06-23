@@ -1,7 +1,7 @@
 import { api } from "@/trpc/server";
-import PageHeading from "../_components/page-heading";
-import LocationCard from "../_components/location-card";
-import CreateLocationButton from "../_components/create-location-button";
+import PageHeading from "../_components/utils/page-heading";
+import CreateLocationButton from "../_components/locations/create-location-button";
+import LocationCard from "../_components/locations/location-card";
 
 export default async function Locations() {
   const locations = await api.locations.getAll();

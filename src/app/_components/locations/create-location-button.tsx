@@ -15,7 +15,7 @@ import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import ImageInput from "./image-input";
+import ImageInput from "../utils/image-input";
 
 export default function CreateLocationButton() {
   const [open, setOpen] = useState(false);

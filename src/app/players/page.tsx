@@ -1,4 +1,4 @@
-import PageHeading from "../_components/page-heading";
+import PageHeading from "../_components/utils/page-heading";
 import PlayerCard from "../_components/player-card";
 import { api } from "@/trpc/server";
 

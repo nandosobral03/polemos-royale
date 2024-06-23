@@ -8,7 +8,7 @@ import {
   Pattern,
   Text,
 } from "react-hexgrid";
-import { GameLocationConfigType } from "./game-config";
+import { GameLocationConfigType } from "./config/game-config";
 import { useEffect, useState } from "react";
 import { MapLocationSchematic } from "@prisma/client";
 

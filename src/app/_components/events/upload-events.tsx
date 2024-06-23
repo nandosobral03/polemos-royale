@@ -70,8 +70,8 @@ export default function UploadEventsButton() {
             return {
               numberOfAttackers: parseInt(numAttackers),
               numberOfDefenders: parseInt(numDefenders),
-              hpChangeAttackers: -parseInt(dmgAV),
-              hpChangeDefenders: -parseInt(dmgVA),
+              hpChangeAttackers: -parseInt(dmgVA),
+              hpChangeDefenders: -parseInt(dmgAV),
               description: descriptionString,
             };
           })

@@ -1,8 +1,8 @@
 import { api } from "@/trpc/server";
-import EventsTable from "../_components/events-table";
-import CreateEventButton from "../_components/create-event-button";
-import UploadEventsButton from "../_components/upload-events";
-import PageHeading from "../_components/page-heading";
+import EventsTable from "../_components/events/events-table";
+import CreateEventButton from "../_components/events/create-event-button";
+import UploadEventsButton from "../_components/events/upload-events";
+import PageHeading from "../_components/utils/page-heading";
 
 export default async function Teams() {
   const events = await api.events.getAll();

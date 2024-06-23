@@ -1,7 +1,7 @@
 import { api } from "@/trpc/server";
-import PageHeading from "../_components/page-heading";
-import HazardCard from "../_components/hazard-card";
-import CreateHazardButton from "../_components/create-hazard-button";
+import PageHeading from "../_components/utils/page-heading";
+import HazardCard from "../_components/hazards/hazard-card";
+import CreateHazardButton from "../_components/hazards/create-hazard-button";
 
 export default async function Hazards() {
   const hazards = await api.hazards.getAll();

@@ -4,6 +4,7 @@ import { playersRouter, sponsorsRouter, teamsRouter } from "./routers/teams";
 import { postRouter } from "@/server/api/routers/post";
 import { eventsRouter } from "./routers/events";
 import { hazardsRouter, locationsRouter } from "./routers/locations";
+import { gamesRouter } from "./routers/game";
 
 /**
  * This is the primary router for your server.
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   events: eventsRouter,
   locations: locationsRouter,
   hazards: hazardsRouter,
+  games: gamesRouter,
 });
 
 // export type definition of API

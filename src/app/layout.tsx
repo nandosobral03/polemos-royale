@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
-import Nav from "./_components/nav";
+import Nav from "./_components/utils/nav";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/toaster";

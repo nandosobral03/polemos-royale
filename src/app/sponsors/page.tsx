@@ -1,6 +1,6 @@
 import { api } from "@/trpc/server";
-import SponsorCard from "../_components/sponsor-card";
-import PageHeading from "../_components/page-heading";
+import SponsorCard from "../_components/teams/sponsor-card";
+import PageHeading from "../_components/utils/page-heading";
 
 export default async function Sponsors() {
   const sponsors = await api.sponsors.getAll();

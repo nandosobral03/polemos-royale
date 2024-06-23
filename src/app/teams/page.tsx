@@ -1,7 +1,7 @@
-import CreateTeamButton from "../_components/create-team-button";
-import PageHeading from "../_components/page-heading";
-import TeamCard from "../_components/team-card";
-import UploadTeamsButton from "../_components/upload-teams";
+import CreateTeamButton from "../_components/teams/create-team-button";
+import PageHeading from "../_components/utils/page-heading";
+import TeamCard from "../_components/teams/team-card";
+import UploadTeamsButton from "../_components/teams/upload-teams";
 import { api } from "@/trpc/server";
 
 export default async function Teams() {
