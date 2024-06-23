@@ -62,7 +62,7 @@ export default function UpdateEventButton({
       numberOfAttackers: event.numberOfAttackers,
       numberOfDefenders: event.numberOfDefenders,
       hpChangeAttackers: parseInt(event.hpChangeAttackers.toString()),
-      hpChangeDefenders: parseInt(event.hpChangeAttackers.toString()),
+      hpChangeDefenders: parseInt(event.hpChangeDefenders.toString()),
       id: initialValues.id,
     });
     toast({

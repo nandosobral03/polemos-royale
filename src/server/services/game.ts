@@ -1,4 +1,8 @@
-import { generateEventDescriptionText, getRandomElement } from "@/lib/utils";
+import {
+  generateEventDescriptionText,
+  getRandomElement,
+  randomizeArray,
+} from "@/lib/utils";
 import { db } from "@/server/db";
 import { Game, GameEvent, MapTile, Player } from "@prisma/client";
 
@@ -53,9 +57,9 @@ const movePlayer = (oldTileId: number, game: Game & { tiles: MapTile[] }) => {
   if (!oldTile) throw new Error("Tile not found");
 
   let idealNewTile = {
-    q: oldTile.q + direction === "q" ? amount : 0,
-    r: oldTile.r + direction === "r" ? amount : 0,
-    s: oldTile.s + direction === "s" ? amount : 0,
+    q: oldTile.q + direction === "q" ? amount : oldTile.q,
+    r: oldTile.r + direction === "r" ? amount : oldTile.r,
+    s: oldTile.s + direction === "s" ? amount : oldTile.s,
   };
 
   const newTile = game.tiles.find(
@@ -111,19 +115,20 @@ export const simulateNextDay = async (gameId: number) => {
     event: GameEvent;
     attackers: { playerId: number; name: string }[];
     defenders: { playerId: number; name: string }[];
+    tileId: number;
   }[] = [];
   for (let tile of game.tiles) {
     const events = tile.location.events.concat(
       tile.hazards.map((h) => h.events).flat(),
     );
-    const playersByTile = JSON.parse(
-      JSON.stringify(playerStatusesByTile[tile.id] ?? []),
+    const playersByTile = randomizeArray(
+      JSON.parse(JSON.stringify(playerStatusesByTile[tile.id] ?? [])),
     ) as {
       playerId: number;
       health: number;
       name: string;
     }[];
-    console.log(playersByTile);
+
     if (!playersByTile.length) continue;
     while (playersByTile.length > 0) {
       console.log(events);
@@ -163,6 +168,7 @@ export const simulateNextDay = async (gameId: number) => {
         event: selectedEvent,
         attackers,
         defenders,
+        tileId: tile.id,
       });
     }
   }
@@ -195,6 +201,7 @@ export const simulateNextDay = async (gameId: number) => {
       await db.gameEventLog.create({
         data: {
           gameDayLogId: gameLog.id,
+          tileId: event.tileId,
           completedEventDescription: generateEventDescriptionText(event.event, [
             ...event.attackers.map((a) => a.name),
             ...event.defenders.map((d) => d.name),

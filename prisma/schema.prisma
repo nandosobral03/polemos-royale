@@ -75,6 +75,7 @@ model MapTile {
   r                 Int
   s                 Int
   playerDayStatuses PlayerDayStatus[]
+  GameEventLog      GameEventLog[]
 }
 
 model GameEvent {
@@ -126,6 +127,8 @@ model GameEventLog {
   attackers                 Player[]   @relation("GameEventLogAttackers")
   defenders                 Player[]   @relation("GameEventLogDefenders")
   completedEventDescription String
+  tileId                    Int
+  tile                      MapTile    @relation(fields: [tileId], references: [id])
   GameDayLog                GameDayLog @relation(fields: [gameDayLogId], references: [id])
   gameDayLogId              Int
 }

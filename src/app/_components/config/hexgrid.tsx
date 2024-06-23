@@ -8,9 +8,9 @@ import {
   Pattern,
   Text,
 } from "react-hexgrid";
-import { GameLocationConfigType } from "./config/game-config";
 import { useEffect, useState } from "react";
 import { MapLocationSchematic } from "@prisma/client";
+import { GameLocationConfigType } from "./game-config";
 
 type HexGridProps = {
   gridElements: GameLocationConfigType["locations"];

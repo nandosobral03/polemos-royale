@@ -89,4 +89,27 @@ export const gamesRouter = createTRPCRouter({
       });
       return log;
     }),
+  getGame: publicProcedure
+    .input(z.object({ gameId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const game = await ctx.db.game.findUnique({
+        where: {
+          id: input.gameId,
+        },
+        include: {
+          players: true,
+          tiles: {
+            include: {
+              location: {
+                include: { events: true },
+              },
+              hazards: {
+                include: { events: true },
+              },
+            },
+          },
+        },
+      });
+      return game;
+    }),
 });

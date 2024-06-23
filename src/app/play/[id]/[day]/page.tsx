@@ -1,4 +1,4 @@
-import GameEventCard from "@/app/_components/game/game-event-card";
+import DayVisualization from "@/app/_components/game/day-visualization";
 import { api } from "@/trpc/server";
 
 export default async function PlayPage({
@@ -17,55 +17,16 @@ export default async function PlayPage({
     gameId: parseInt(params.id),
     day: parseInt(params.day) - 1,
   });
+  const game = await api.games.getGame({
+    gameId: parseInt(params.id),
+  });
 
   if (!dayInfo) return <div>Not found</div>;
 
-  const playerChanges: Record<
-    number,
-    {
-      health: {
-        prev: number;
-        current: number;
-      };
-      tileId: {
-        prev: number;
-        current: number;
-      };
-    }
-  > = dayInfo.playerStatuses.reduce(
-    (acc, ps) => {
-      const prev = prevDay?.playerStatuses.find(
-        (p) => p.playerId === ps.playerId,
-      );
-      acc[ps.playerId] = {
-        health: {
-          prev: prev?.health ?? 100,
-          current: ps.health,
-        },
-        tileId: {
-          prev: prev?.tileId ?? 0,
-          current: ps.tileId,
-        },
-      };
-      return acc;
-    },
-    {} as Record<
-      number,
-      {
-        health: { prev: number; current: number };
-        tileId: { prev: number; current: number };
-      }
-    >,
-  );
-
   return (
-    <div className="flex flex-col items-center justify-center overflow-auto">
-      Day {dayInfo.day}
-      <div className="flex flex-col gap-4">
-        {dayInfo.eventLogs.map((el) => (
-          <GameEventCard event={el} playerChanges={playerChanges} />
-        ))}
-      </div>
+    <div className="flex flex-col items-start justify-center gap-2 overflow-auto">
+      <h1 className="mb-4 text-3xl font-bold">Day {dayInfo.day}</h1>
+      <DayVisualization dayInfo={dayInfo} prevDay={prevDay} game={game} />
     </div>
   );
 }

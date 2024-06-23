@@ -99,3 +99,7 @@ export function areSameHexagons(
     hexagon1.s === hexagon2.s
   );
 }
+
+export function randomizeArray<T>(array: T[]): T[] {
+  return array.sort(() => Math.random() - 0.5);
+}

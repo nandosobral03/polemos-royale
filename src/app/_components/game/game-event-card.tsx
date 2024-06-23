@@ -52,7 +52,9 @@ const PlayerPreview = ({
         className="h-10 w-10 rounded-full"
         alt={player.name}
       />
-      <span className="text-lg font-normal">{player.name}</span>
+      <span className="line-clamp-2 max-w-sm text-lg font-normal">
+        {player.name}
+      </span>
       <div className="flex items-center gap-2">
         <span className="text-sm text-gray-500">
           {changes.health.prev} {`->`} {changes.health.current}
