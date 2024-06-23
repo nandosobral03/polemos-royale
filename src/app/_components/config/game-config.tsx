@@ -8,7 +8,7 @@ import { MapLocationSchematic, MapHazardSchematic } from "@prisma/client";
 import GameTeamsConfig from "./game-teams-config";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-
+import { useRouter } from "next/navigation";
 type GameConfigProps = {
   locations: RouterOutputs["locations"]["getAll"];
   hazards: RouterOutputs["hazards"]["getAll"];
@@ -35,7 +35,7 @@ export default function GameConfig({
   teams,
 }: GameConfigProps) {
   const createGameMutation = api.games.create.useMutation();
-
+  const router = useRouter();
   const generateHexPositions = (size: number) => {
     const hexPositions = [];
     for (let q = -size; q <= size; q++) {
@@ -77,7 +77,7 @@ export default function GameConfig({
         hazardIds: l.hazards.map((h) => h.id),
       })),
     });
-    console.log(gameId);
+    router.push(`/play/${gameId}`);
     toast({
       title: "Game created",
       description: "The game has been created",
@@ -105,7 +105,7 @@ export default function GameConfig({
         </Button>
 
         <Button onClick={handleCreateGame} className="ml-auto">
-          Run simulation
+          Create Game
         </Button>
       </div>
       {currentStep === TEAM_SELECTION_STEP && (

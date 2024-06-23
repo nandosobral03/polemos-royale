@@ -93,9 +93,9 @@ export const simulateNextDay = async (gameId: number) => {
       },
     },
   });
-  if (!game) throw new Error("Game not found");
+  if (!game) return false;
   const playerStatuses = await getStartOfDayPlayerStatuses(game);
-  if (playerStatuses.length === 0 || playerStatuses.length === 1) return;
+  if (playerStatuses.length === 0 || playerStatuses.length === 1) return false;
   const playerStatusesByTile = playerStatuses.reduce(
     (acc, ps) => {
       acc[ps.tileId] = [...(acc[ps.tileId] ?? []), ps];
@@ -220,4 +220,5 @@ export const simulateNextDay = async (gameId: number) => {
       });
     }),
   );
+  return true;
 };

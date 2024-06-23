@@ -18,6 +18,7 @@ export default function GameEventCard({
   return (
     <Card className="w-full grow">
       <CardContent className="flex flex-col items-start gap-3 p-3">
+        {/* <pre>{JSON.stringify(event, null, 2)}</pre> */}
         {event.completedEventDescription}
         {event.attackers.map((p) => (
           <PlayerPreview key={p.id} player={p} playerChanges={playerChanges} />
@@ -44,7 +45,6 @@ const PlayerPreview = ({
   >;
 }) => {
   const changes = playerChanges[player.id];
-  if (!changes) return null;
   return (
     <div className="flex flex items-center gap-3 p-3">
       <img
@@ -56,9 +56,13 @@ const PlayerPreview = ({
         {player.name}
       </span>
       <div className="flex items-center gap-2">
-        <span className="text-sm text-gray-500">
-          {changes.health.prev} {`->`} {changes.health.current}
-        </span>
+        {changes ? (
+          <>
+            <span className="text-sm text-gray-500">
+              {changes.health.prev} {`->`} {changes.health.current}
+            </span>
+          </>
+        ) : null}
       </div>
     </div>
   );

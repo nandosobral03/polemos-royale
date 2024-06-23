@@ -62,10 +62,8 @@ export const gamesRouter = createTRPCRouter({
       };
     }),
   simulateDays: publicProcedure
-    .input(z.object({ days: z.number(), gameId: z.number() }))
-    .mutation(async ({ ctx, input }) => {
-      await simulateNextDay(input.gameId);
-    }),
+    .input(z.object({ gameId: z.number() }))
+    .mutation(({ input }) => simulateNextDay(input.gameId)),
   getGameDayInfo: publicProcedure
     .input(z.object({ gameId: z.number(), day: z.number() }))
     .query(async ({ ctx, input }) => {

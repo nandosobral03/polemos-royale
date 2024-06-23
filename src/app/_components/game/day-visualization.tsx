@@ -35,35 +35,61 @@ export default function DayVisualization({
         current: number;
       };
     }
-  > = dayInfo.playerStatuses.reduce(
-    (acc, ps) => {
-      const prev = prevDay?.playerStatuses.find(
-        (p) => p.playerId === ps.playerId,
+  > = prevDay
+    ? prevDay.playerStatuses.reduce(
+        (acc, prev) => {
+          const ps = dayInfo.playerStatuses.find(
+            (p) => p.playerId === prev.playerId,
+          );
+          acc[prev.playerId] = {
+            health: {
+              prev: prev.health,
+              current: ps?.health ?? 0,
+            },
+            tileId: {
+              prev: prev.tileId,
+              current: ps?.tileId ?? 0,
+            },
+          };
+          return acc;
+        },
+        {} as Record<
+          number,
+          {
+            health: { prev: number; current: number };
+            tileId: { prev: number; current: number };
+          }
+        >,
+      )
+    : dayInfo.playerStatuses.reduce(
+        (acc, ps) => {
+          acc[ps.playerId] = {
+            health: {
+              prev: 100,
+              current: ps.health,
+            },
+            tileId: {
+              prev: 0,
+              current: ps.tileId,
+            },
+          };
+          return acc;
+        },
+        {} as Record<
+          number,
+          {
+            health: { prev: number; current: number };
+            tileId: { prev: number; current: number };
+          }
+        >,
       );
-      acc[ps.playerId] = {
-        health: {
-          prev: prev?.health ?? 100,
-          current: ps.health,
-        },
-        tileId: {
-          prev: prev?.tileId ?? 0,
-          current: ps.tileId,
-        },
-      };
-      return acc;
-    },
-    {} as Record<
-      number,
-      {
-        health: { prev: number; current: number };
-        tileId: { prev: number; current: number };
-      }
-    >,
-  );
 
   return (
-    <div className="flex w-full flex-col gap-4">
-      <Button onClick={() => setShowMapView(!showMapView)}>
+    <div className="flex w-full flex-col items-center gap-4">
+      <Button
+        onClick={() => setShowMapView(!showMapView)}
+        className="w-xl ml-auto"
+      >
         {showMapView ? "Hide map" : "Show map"}
       </Button>
       {showMapView ? (
