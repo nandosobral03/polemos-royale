@@ -1,8 +1,7 @@
 "use client";
 import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
-import { RouterOutputs } from "@/trpc/react";
-import { useState } from "react";
+import { type RouterOutputs } from "@/trpc/react";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function TeamsSelectTable({

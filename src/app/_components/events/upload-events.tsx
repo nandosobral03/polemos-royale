@@ -39,15 +39,28 @@ export default function UploadEventsButton() {
       worker: true,
       complete: (results: { data: string[][] }) => {
         const data = results.data.slice(1);
-        const allEvents: Omit<GameEvent, "id">[] = data
+        const allEvents: (Omit<GameEvent, "id"> & {
+          locationIds: number[];
+          hazardIds: number[];
+        })[] = data
           .map((row) => {
-            const [numAttackers, numDefenders, dmgAV, dmgVA, description] = row;
+            const [
+              numAttackers,
+              numDefenders,
+              dmgAV,
+              dmgVA,
+              description,
+              locationIds,
+              hazardIds,
+            ] = row;
             if (
               numAttackers === undefined ||
               numDefenders === undefined ||
               dmgAV === undefined ||
               dmgVA === undefined ||
-              description === undefined
+              description === undefined ||
+              locationIds === undefined ||
+              hazardIds === undefined
             )
               return null;
             let curr = 1;
@@ -73,6 +86,20 @@ export default function UploadEventsButton() {
               hpChangeAttackers: -parseInt(dmgVA),
               hpChangeDefenders: -parseInt(dmgAV),
               description: descriptionString,
+              locationIds:
+                locationIds.trim().length > 0
+                  ? locationIds
+                      .trim()
+                      .split(",")
+                      .map((e) => parseInt(e))
+                  : [],
+              hazardIds:
+                hazardIds.trim().length > 0
+                  ? hazardIds
+                      .trim()
+                      .split(",")
+                      .map((e) => parseInt(e))
+                  : [],
             };
           })
           .filter((e) => e !== null);

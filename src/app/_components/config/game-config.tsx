@@ -1,13 +1,14 @@
 "use client";
-
-import { api, RouterOutputs } from "@/trpc/react";
+import { api, type RouterOutputs } from "@/trpc/react";
 import GameLocationConfig from "./game-location-config";
 import { getRandomElement } from "@/lib/utils";
 import { useState } from "react";
-import { MapLocationSchematic, MapHazardSchematic } from "@prisma/client";
+import {
+  type MapLocationSchematic,
+  type MapHazardSchematic,
+} from "@prisma/client";
 import GameTeamsConfig from "./game-teams-config";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 type GameConfigProps = {
   locations: RouterOutputs["locations"]["getAll"];
@@ -57,7 +58,9 @@ export default function GameConfig({
     q: position.q,
     r: position.r,
     s: position.s,
-    location: JSON.parse(JSON.stringify(getRandomElement(locations))),
+    location: JSON.parse(
+      JSON.stringify(getRandomElement(locations)),
+    ) as MapLocationSchematic,
     hazards: [],
   }));
 
@@ -66,7 +69,12 @@ export default function GameConfig({
     teams: teams.map((t) => t.id),
   });
 
+  const simulateDaysMutation = api.games.simulateDays.useMutation();
+  const [loadedDays, setLoadedDays] = useState(0);
+  const [loading, setLoading] = useState(false);
+
   const handleCreateGame = async () => {
+    setLoading(true);
     const { gameId } = await createGameMutation.mutateAsync({
       teams: gameConfig.teams,
       tiles: gameConfig.locations.map((l) => ({
@@ -77,11 +85,17 @@ export default function GameConfig({
         hazardIds: l.hazards.map((h) => h.id),
       })),
     });
-    router.push(`/play/${gameId}`);
-    toast({
-      title: "Game created",
-      description: "The game has been created",
+    let value = await simulateDaysMutation.mutateAsync({
+      gameId: gameId,
     });
+    while (value) {
+      value = await simulateDaysMutation.mutateAsync({
+        gameId: gameId,
+      });
+      setLoadedDays((d) => d + 1);
+    }
+    setLoading(false);
+    router.push(`/play/${gameId}/1`);
   };
 
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -104,8 +118,16 @@ export default function GameConfig({
           Map
         </Button>
 
-        <Button onClick={handleCreateGame} className="ml-auto">
-          Create Game
+        <Button
+          onClick={handleCreateGame}
+          className="ml-auto"
+          disabled={loading}
+        >
+          {loading
+            ? loadedDays
+              ? `Simulating day ${loadedDays}`
+              : "Creating Game"
+            : "Create Game"}
         </Button>
       </div>
       {currentStep === TEAM_SELECTION_STEP && (

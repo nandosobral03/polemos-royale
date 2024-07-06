@@ -1,19 +1,10 @@
 "use client";
+import { HexGrid, Layout, Hexagon, Pattern } from "react-hexgrid";
 import {
-  HexGrid,
-  Layout,
-  Hexagon,
-  Path,
-  Hex,
-  Pattern,
-  Text,
-} from "react-hexgrid";
-import { useState } from "react";
-import {
-  GameEventLog,
-  MapLocationSchematic,
-  MapTile,
-  Player,
+  type GameEventLog,
+  type MapLocationSchematic,
+  type MapTile,
+  type Player,
 } from "@prisma/client";
 import clsx from "clsx";
 
@@ -24,14 +15,12 @@ type GameHexGridProps = {
   eventLogs: (GameEventLog & { attackers: Player[]; defenders: Player[] })[];
 };
 
-export default function HexGridPage({
+export default function GameMapView({
   gridElements,
   selectedHexagon,
   setSelectedHexagon,
   eventLogs,
 }: GameHexGridProps) {
-  const [isClient, setIsClient] = useState(false);
-
   return (
     <HexGrid width={1200} height={800} viewBox="-50 -50 100 100">
       <Layout

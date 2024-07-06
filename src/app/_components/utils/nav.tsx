@@ -14,7 +14,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import Image from "next/image";
 import { routes } from "@/lib/nav";
-import React from "react";
+import React, { Fragment } from "react";
 import { cn } from "@/lib/utils";
 
 export default function Nav() {
@@ -27,15 +27,15 @@ export default function Nav() {
               src="/logo.svg"
               className="h-10 w-auto"
               alt="Logo"
-              width={40}
-              height={40}
+              width={128}
+              height={128}
             />
           </a>
 
           <NavigationMenu>
             <NavigationMenuList>
               {routes.map((route) => (
-                <>
+                <Fragment key={route.path}>
                   {route.children ? (
                     <NavigationMenuItem>
                       <NavigationMenuTrigger>
@@ -73,7 +73,7 @@ export default function Nav() {
                       </Link>
                     </NavigationMenuItem>
                   )}
-                </>
+                </Fragment>
               ))}
             </NavigationMenuList>
           </NavigationMenu>

@@ -4,7 +4,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   CheckCircledIcon,
   Cross2Icon,
-  ListBulletIcon,
   Pencil2Icon,
   TrashIcon,
 } from "@radix-ui/react-icons";
@@ -16,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import HazardEventButtons from "./hazard-events-button";
-import { GameEvent } from "@prisma/client";
+import { type GameEvent } from "@prisma/client";
 
 export default function HazardCard({
   hazard,

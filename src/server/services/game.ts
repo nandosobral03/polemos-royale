@@ -4,7 +4,12 @@ import {
   randomizeArray,
 } from "@/lib/utils";
 import { db } from "@/server/db";
-import { Game, GameEvent, MapTile, Player } from "@prisma/client";
+import {
+  type Game,
+  type GameEvent,
+  type MapTile,
+  type Player,
+} from "@prisma/client";
 
 const getStartOfDayPlayerStatuses = async (
   game: Game & { players: Player[]; tiles: MapTile[] },
@@ -48,18 +53,63 @@ const getStartOfDayPlayerStatuses = async (
   }
   return playerStatuses;
 };
+const moveToCenter = (tile: { q: number; r: number; s: number }) => {
+  let { q, r, s } = tile;
 
-const movePlayer = (oldTileId: number, game: Game & { tiles: MapTile[] }) => {
+  if (q > 0) {
+    q -= 1;
+    s += 1;
+  } else if (q < 0) {
+    q += 1;
+    s -= 1;
+  } else if (r > 0) {
+    r -= 1;
+    q += 1;
+  } else if (r < 0) {
+    r += 1;
+    q -= 1;
+  } else if (s > 0) {
+    s -= 1;
+    r += 1;
+  } else if (s < 0) {
+    s += 1;
+    r -= 1;
+  }
+
+  return { q, r, s };
+};
+
+const movePlayer = (
+  oldTileId: number,
+  game: Game & { tiles: MapTile[] },
+  shrinkedLevel: 0 | 1 | 2 | 3 = 0,
+) => {
+  const oldTile = game.tiles.find((t) => t.id === oldTileId);
+
+  if (!oldTile) throw new Error("Tile not found");
+  const currentLevel = Math.max(
+    Math.abs(oldTile.q),
+    Math.abs(oldTile.r),
+    Math.abs(oldTile.s),
+  );
+  const maxAllowedLevel = 3 - shrinkedLevel;
+  console.log(maxAllowedLevel);
+  if (currentLevel > maxAllowedLevel) {
+    const { q, r, s } = moveToCenter(oldTile);
+
+    const newTile = game.tiles.find((t) => t.q === q && t.r === r && t.s === s);
+    console.log(oldTile.q, oldTile.r, oldTile.s);
+    if (!newTile) return oldTileId;
+    return newTile.id;
+  }
+
   const direction: "q" | "r" | "s" = getRandomElement(["q", "r", "s"]);
   const amount: -1 | 0 | 1 = getRandomElement([-1, 0, 1]);
 
-  const oldTile = game.tiles.find((t) => t.id === oldTileId);
-  if (!oldTile) throw new Error("Tile not found");
-
-  let idealNewTile = {
-    q: oldTile.q + direction === "q" ? amount : oldTile.q,
-    r: oldTile.r + direction === "r" ? amount : oldTile.r,
-    s: oldTile.s + direction === "s" ? amount : oldTile.s,
+  const idealNewTile = {
+    q: oldTile.q + direction === "q" ? oldTile.q : oldTile.q + amount,
+    r: oldTile.r + direction === "r" ? oldTile.r : oldTile.r + amount,
+    s: oldTile.s + direction === "s" ? oldTile.s : oldTile.s + amount,
   };
 
   const newTile = game.tiles.find(
@@ -69,7 +119,6 @@ const movePlayer = (oldTileId: number, game: Game & { tiles: MapTile[] }) => {
       t.s === idealNewTile.s,
   );
   if (!newTile) return oldTileId;
-
   return newTile.id;
 };
 
@@ -101,9 +150,7 @@ export const simulateNextDay = async (gameId: number) => {
       acc[ps.tileId] = [...(acc[ps.tileId] ?? []), ps];
       return acc;
     },
-    {} as {
-      [tileId: number]: { playerId: number; health: number; name: string }[];
-    },
+    {} as Record<number, { playerId: number; health: number; name: string }[]>,
   );
 
   const resultingStatuses: {
@@ -117,21 +164,18 @@ export const simulateNextDay = async (gameId: number) => {
     defenders: { playerId: number; name: string }[];
     tileId: number;
   }[] = [];
-  for (let tile of game.tiles) {
+  for (const tile of game.tiles) {
     const events = tile.location.events.concat(
       tile.hazards.map((h) => h.events).flat(),
     );
     const playersByTile = randomizeArray(
-      JSON.parse(JSON.stringify(playerStatusesByTile[tile.id] ?? [])),
-    ) as {
-      playerId: number;
-      health: number;
-      name: string;
-    }[];
+      JSON.parse(
+        JSON.stringify(playerStatusesByTile[tile.id] ?? []),
+      ) as (typeof playerStatusesByTile)[number],
+    );
 
     if (!playersByTile.length) continue;
     while (playersByTile.length > 0) {
-      console.log(events);
       const selectedEvent = getRandomElement(
         events.filter(
           (e) =>
@@ -173,15 +217,16 @@ export const simulateNextDay = async (gameId: number) => {
     }
   }
 
-  // Probably around here we should check if the zone is shrinking and alladat
+  const day = game.gameDayLog.length + 1;
+  const shrinkedLevel = Math.min(3, Math.floor((day + 1) / 5)) as 0 | 1 | 2 | 3;
 
   const resultingStatusesWithNewTiles = resultingStatuses
     .filter((s) => s.health > 0)
-    .map((s) => ({ ...s, tileId: movePlayer(s.tileId, game) }));
+    .map((s) => ({ ...s, tileId: movePlayer(s.tileId, game, shrinkedLevel) }));
 
   const gameLog = await db.gameDayLog.create({
     data: {
-      day: game.gameDayLog.length + 1,
+      day,
       gameId: game.id,
     },
   });
@@ -196,7 +241,7 @@ export const simulateNextDay = async (gameId: number) => {
     })),
   });
 
-  Promise.all(
+  await Promise.all(
     resultingEvents.map(async (event) => {
       await db.gameEventLog.create({
         data: {
@@ -206,6 +251,7 @@ export const simulateNextDay = async (gameId: number) => {
             ...event.attackers.map((a) => a.name),
             ...event.defenders.map((d) => d.name),
           ]),
+          eventId: event.event.id,
           attackers: {
             connect: event.attackers.map((p) => ({
               id: p.playerId,

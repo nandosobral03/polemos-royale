@@ -10,11 +10,12 @@ import {
 import { type RouterOutputs, api } from "@/trpc/react";
 
 import { Button } from "@/components/ui/button";
-import ImageInput from "./utils/image-input";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import Image from "next/image";
+import ImageInput from "../utils/image-input";
 
 export default function SponsorCard({
   sponsor,
@@ -86,8 +87,9 @@ export default function SponsorCard({
       className="mr-auto w-full grow lg:w-1/3 lg:max-w-[50%]"
     >
       <CardContent className="flex items-center justify-between gap-3 p-3 pt-3">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
+          height={128}
+          width={128}
           src={sponsorImage}
           alt={sponsorName}
           className="aspect-square h-12 w-auto rounded-md object-cover"

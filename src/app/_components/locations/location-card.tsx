@@ -4,7 +4,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   CheckCircledIcon,
   Cross2Icon,
-  ListBulletIcon,
   Pencil2Icon,
   TrashIcon,
 } from "@radix-ui/react-icons";
@@ -16,8 +15,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import LocationEventButtons from "./location-events-button";
-import { GameEvent } from "@prisma/client";
+import { type GameEvent } from "@prisma/client";
 import ImageInput from "../utils/image-input";
+import Image from "next/image";
 
 export default function LocationCard({
   location,
@@ -68,7 +68,9 @@ export default function LocationCard({
             alt={locationName}
             onChange={(e) => setLocationImage(e)}
           >
-            <img
+            <Image
+              height={128}
+              width={128}
               src={locationImage}
               alt={locationName}
               className="aspect-square h-24 w-auto rounded-md object-cover"
@@ -100,7 +102,9 @@ export default function LocationCard({
   return (
     <Card key={location.id} className="w-full grow lg:w-1/3">
       <CardContent className="flex items-center justify-between gap-3 p-3 pt-3">
-        <img
+        <Image
+          height={128}
+          width={128}
           src={locationImage}
           alt={locationName}
           className="aspect-square h-24 w-auto rounded-md object-cover"

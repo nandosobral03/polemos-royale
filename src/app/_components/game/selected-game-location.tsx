@@ -5,22 +5,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import {
-  GameEventLog,
-  MapHazardSchematic,
-  MapLocationSchematic,
-  MapTile,
-  Player,
-} from "@prisma/client";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { TrashIcon } from "@radix-ui/react-icons";
+import { type GameEventLog, type MapTile, type Player } from "@prisma/client";
 import GameEventCard from "./game-event-card";
 
 export default function SelectedGameLocation({
@@ -29,6 +14,7 @@ export default function SelectedGameLocation({
   tile,
   playerChanges,
   eventLogs,
+  gameId,
 }: {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
@@ -41,6 +27,7 @@ export default function SelectedGameLocation({
       tileId: { prev: number; current: number };
     }
   >;
+  gameId: number;
 }) {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -55,7 +42,12 @@ export default function SelectedGameLocation({
             </SheetTitle>
             <SheetDescription className="flex max-h-[95vh] flex-col gap-1 overflow-auto p-4">
               {eventLogs.map((el) => (
-                <GameEventCard event={el} playerChanges={playerChanges} />
+                <GameEventCard
+                  key={el.id}
+                  event={el}
+                  playerChanges={playerChanges}
+                  gameId={gameId}
+                />
               ))}
             </SheetDescription>
           </SheetHeader>

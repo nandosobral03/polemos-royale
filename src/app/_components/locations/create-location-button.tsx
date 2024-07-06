@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import ImageInput from "../utils/image-input";
+import Image from "next/image";
 
 export default function CreateLocationButton() {
   const [open, setOpen] = useState(false);
@@ -68,7 +69,9 @@ export default function CreateLocationButton() {
               alt=""
               onChange={(e) => setLocationImage(e)}
             >
-              <img
+              <Image
+                height={128}
+                width={128}
                 src={locationImage}
                 alt={locationName}
                 className="aspect-square h-24 w-auto rounded-md object-cover"

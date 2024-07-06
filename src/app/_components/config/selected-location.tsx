@@ -5,8 +5,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { GameLocationConfigType } from "./game-config";
-import { MapHazardSchematic, MapLocationSchematic } from "@prisma/client";
+import { type GameLocationConfigType } from "./game-config";
+import { type MapHazardSchematic, type MapLocationSchematic } from "@prisma/client";
 import {
   Select,
   SelectContent,
@@ -16,6 +16,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "@radix-ui/react-icons";
+import Image from "next/image";
 
 export default function SelectedLocation({
   gameConfig,
@@ -64,7 +65,9 @@ export default function SelectedLocation({
               <Separator />
               <label className="text-md block font-medium">Location</label>
               <div className="flex gap-2">
-                <img
+                <Image
+                  height={128}
+                  width={128}
                   src={hexSquare.location.image}
                   alt={hexSquare.location.name}
                   className="aspect-square h-24 w-auto rounded-md object-cover"

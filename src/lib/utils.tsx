@@ -1,4 +1,5 @@
-import { GameEvent } from "@prisma/client";
+import { type RouterOutputs } from "@/trpc/react";
+import { type GameEvent } from "@prisma/client";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -103,3 +104,57 @@ export function areSameHexagons(
 export function randomizeArray<T>(array: T[]): T[] {
   return array.sort(() => Math.random() - 0.5);
 }
+
+export const getPlayerChanges = (
+  dayInfo: NonNullable<RouterOutputs["games"]["getGameDayInfo"]>,
+  prevDay: RouterOutputs["games"]["getGameDayInfo"],
+) => {
+  return prevDay
+    ? prevDay.playerStatuses.reduce(
+        (acc, prev) => {
+          const ps = dayInfo.playerStatuses.find(
+            (p) => p.playerId === prev.playerId,
+          );
+          acc[prev.playerId] = {
+            health: {
+              prev: prev.health,
+              current: ps?.health ?? 0,
+            },
+            tileId: {
+              prev: prev.tileId,
+              current: ps?.tileId ?? 0,
+            },
+          };
+          return acc;
+        },
+        {} as Record<
+          number,
+          {
+            health: { prev: number; current: number };
+            tileId: { prev: number; current: number };
+          }
+        >,
+      )
+    : dayInfo.playerStatuses.reduce(
+        (acc, ps) => {
+          acc[ps.playerId] = {
+            health: {
+              prev: 100,
+              current: ps.health,
+            },
+            tileId: {
+              prev: 0,
+              current: ps.tileId,
+            },
+          };
+          return acc;
+        },
+        {} as Record<
+          number,
+          {
+            health: { prev: number; current: number };
+            tileId: { prev: number; current: number };
+          }
+        >,
+      );
+};

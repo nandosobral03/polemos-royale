@@ -30,6 +30,7 @@ import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import Image from "next/image";
 
 export default function TeamCard({
   team,
@@ -173,8 +174,9 @@ export default function TeamCard({
                   <TrashIcon />
                 </Button>
                 <div className="flex items-center gap-2">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
+                    height={128}
+                    width={128}
                     src={player.image}
                     className="aspect-square h-8 w-auto object-cover"
                     alt="Player"
@@ -229,8 +231,9 @@ export default function TeamCard({
             {players.map((player) => (
               <div key={player.id}>
                 <div className="flex items-center gap-2">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
+                    height={128}
+                    width={128}
                     src={player.image}
                     className="aspect-square h-8 w-auto object-cover"
                     alt="Player"

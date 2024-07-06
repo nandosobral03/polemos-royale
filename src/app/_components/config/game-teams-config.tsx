@@ -1,6 +1,6 @@
-import { RouterOutputs } from "@/trpc/react";
+import { type RouterOutputs } from "@/trpc/react";
 import TeamsSelectTable from "./team-select-table";
-import { GameLocationConfigType } from "./game-config";
+import { type GameLocationConfigType } from "./game-config";
 
 const GameTeamsConfig = ({
   teams,

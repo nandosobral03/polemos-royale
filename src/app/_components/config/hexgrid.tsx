@@ -1,16 +1,8 @@
 "use client";
-import {
-  HexGrid,
-  Layout,
-  Hexagon,
-  Path,
-  Hex,
-  Pattern,
-  Text,
-} from "react-hexgrid";
+import { HexGrid, Layout, Hexagon, Pattern } from "react-hexgrid";
 import { useEffect, useState } from "react";
-import { MapLocationSchematic } from "@prisma/client";
-import { GameLocationConfigType } from "./game-config";
+import { type MapLocationSchematic } from "@prisma/client";
+import { type GameLocationConfigType } from "./game-config";
 
 type HexGridProps = {
   gridElements: GameLocationConfigType["locations"];
@@ -71,7 +63,11 @@ export default function HexGridPage({
             </>
           ))}
           {locations.map((location) => (
-            <Pattern id={`pat-${location.id}`} link={location.image} />
+            <Pattern
+              id={`pat-${location.id}`}
+              link={location.image}
+              key={location.id}
+            />
           ))}
         </>
       </Layout>

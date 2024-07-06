@@ -8,22 +8,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { GameEvent } from "@prisma/client";
-import {
-  ListBulletIcon,
-  PlusCircledIcon,
-  TrashIcon,
-} from "@radix-ui/react-icons";
+import { type GameEvent } from "@prisma/client";
+import { ListBulletIcon, TrashIcon } from "@radix-ui/react-icons";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 
 import { Button } from "@/components/ui/button";
-import { api, RouterOutputs } from "@/trpc/react";
+import { api, type RouterOutputs } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";

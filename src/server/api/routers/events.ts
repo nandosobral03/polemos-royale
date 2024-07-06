@@ -7,6 +7,8 @@ const createEventSchema = z.object({
   numberOfDefenders: z.number().min(0),
   hpChangeAttackers: z.number(),
   hpChangeDefenders: z.number(),
+  locationIds: z.array(z.number()),
+  hazardIds: z.array(z.number()),
 });
 
 export const eventsRouter = createTRPCRouter({
@@ -47,10 +49,54 @@ export const eventsRouter = createTRPCRouter({
   massUploadEvents: publicProcedure
     .input(z.array(createEventSchema))
     .mutation(async ({ ctx, input }) => {
+      const uniqueLocations = new Set(input.map((e) => e.locationIds).flat());
+      const uniqueHazards = new Set(input.map((e) => e.hazardIds).flat());
+
+      const eventsWithIds = input.map((e, i) => ({
+        ...e,
+        id: i,
+      }));
       await ctx.db.gameEvent.deleteMany();
+      await ctx.db.mapHazardSchematic.deleteMany();
+      await ctx.db.mapLocationSchematic.deleteMany();
+
       await ctx.db.gameEvent.createMany({
-        data: input,
+        data: eventsWithIds.map((e) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { locationIds, hazardIds, ...rest } = e;
+          return rest;
+        }),
       });
+
+      for (const locationId of uniqueLocations) {
+        await ctx.db.mapLocationSchematic.create({
+          data: {
+            id: locationId,
+            name: `Location ${locationId}`,
+            image: "https://via.placeholder.com/150",
+            events: {
+              connect: eventsWithIds
+                .filter((e) => e.locationIds.includes(locationId))
+                .map((e) => ({ id: e.id })),
+            },
+          },
+        });
+      }
+
+      for (const hazardId of uniqueHazards) {
+        await ctx.db.mapHazardSchematic.create({
+          data: {
+            id: hazardId,
+            name: `Hazard ${hazardId}`,
+            events: {
+              connect: eventsWithIds
+                .filter((e) => e.hazardIds.includes(hazardId))
+                .map((e) => ({ id: e.id })),
+            },
+          },
+        });
+      }
+
       return input;
     }),
 });

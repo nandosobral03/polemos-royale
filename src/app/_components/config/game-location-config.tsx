@@ -1,9 +1,12 @@
-import { MapHazardSchematic, MapLocationSchematic } from "@prisma/client";
+import {
+  type MapHazardSchematic,
+  type MapLocationSchematic,
+} from "@prisma/client";
 import HexGridPage from "./hexgrid";
-import { GameLocationConfigType } from "./config/game-config";
 import { useState } from "react";
 import SelectedLocation from "./selected-location";
 import { areSameHexagons } from "@/lib/utils";
+import { type GameLocationConfigType } from "./game-config";
 
 export default function GameLocationConfig({
   gameConfig,

@@ -1,8 +1,13 @@
 import DayVisualization from "@/app/_components/game/day-visualization";
+import PlayersAliveChart from "@/app/_components/game/players-alive-chart";
 import PageHeading from "@/app/_components/utils/page-heading";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import TitledCard from "@/components/ui/titled-card";
 import { api } from "@/trpc/server";
+import { type Player } from "@prisma/client";
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function PlayPage({
@@ -25,7 +30,12 @@ export default async function PlayPage({
     gameId: parseInt(params.id),
   });
 
+  if (!game) return <div>Not found</div>;
+
   if (!dayInfo) {
+    const gameStats = await api.games.getGameStats({
+      gameId: parseInt(params.id),
+    });
     if (prevDay) {
       const winner = prevDay.playerStatuses.find((ps) => ps.health > 0);
       const player = game?.players.find((p) => p.id === winner?.playerId);
@@ -33,20 +43,111 @@ export default async function PlayPage({
         <>
           <PageHeading title="The games are over" />
           <Card className="w-full p-4">
-            <CardContent className="flex flex-col items-start gap-3 p-3">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between gap-2">
+                <span className="grow">Result</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-start gap-3 p-3 md:flex-row">
               {winner && player ? (
-                <div className="flex flex-col items-center gap-4 text-center">
-                  <img
-                    src={player.image}
-                    className="h-48 w-48 rounded-md border border-yellow-500"
-                  />
-                  <p className="text-lg font-bold">{player.name} won</p>
-                </div>
+                <Link href={`/play/${game.id}/player/${player.id}`}>
+                  <div className="flex flex-col items-center gap-4 text-center">
+                    <Image
+                      height={128}
+                      width={128}
+                      src={player.image}
+                      className="h-48 w-48 rounded-md border border-yellow-500"
+                      alt={"Player image"}
+                    />
+                    <p className="text-lg font-bold">{player.name} won</p>
+                  </div>
+                </Link>
               ) : (
                 <div className="text-center">
                   <p className="text-lg font-bold">Everyone died</p>
                 </div>
               )}
+            </CardContent>
+          </Card>
+          <Card className="w-full p-4">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between gap-2">
+                <span className="grow">Game Stats</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-start gap-3 p-3 ">
+              <PlayersAliveChart
+                numberOfPlayers={gameStats?.numberOfPlayersAliveByDay ?? []}
+                initialCount={game?.players.length ?? 0}
+              />
+              <div className="flex w-full justify-end gap-4 ">
+                {gameStats && (
+                  <>
+                    <TitledCard
+                      title="Most Damage Done"
+                      className="h-[30vh] items-start justify-start gap-4"
+                    >
+                      <Separator />
+
+                      {gameStats.damageByPlayer
+                        .slice(0, 5)
+                        .map((player, idx) => (
+                          <Link
+                            href={`/play/${game.id}/player/${player.id}`}
+                            key={player.name}
+                          >
+                            <LeaderBoardEntry
+                              player={player}
+                              score={player.damage}
+                              idx={idx}
+                            />
+                          </Link>
+                        ))}
+                    </TitledCard>
+                    <TitledCard
+                      title="Most Kills"
+                      className="h-[30vh] items-start justify-start gap-4"
+                    >
+                      <Separator />
+
+                      {gameStats.killsByPlayer
+                        .slice(0, 5)
+                        .map((player, idx) => (
+                          <Link
+                            href={`/play/${game.id}/player/${player.id}`}
+                            key={player.name}
+                          >
+                            <LeaderBoardEntry
+                              player={player}
+                              score={player.kills}
+                              idx={idx}
+                            />
+                          </Link>
+                        ))}
+                    </TitledCard>
+                    <TitledCard
+                      title="Most Traveled"
+                      className="h-[30vh] items-start justify-start gap-4"
+                    >
+                      <Separator />
+                      {gameStats.traveledByPlayer
+                        .slice(0, 5)
+                        .map((player, idx) => (
+                          <Link
+                            href={`/play/${game.id}/player/${player.id}`}
+                            key={player.name}
+                          >
+                            <LeaderBoardEntry
+                              player={player}
+                              score={player.traveled}
+                              idx={idx}
+                            />
+                          </Link>
+                        ))}
+                    </TitledCard>
+                  </>
+                )}
+              </div>
             </CardContent>
           </Card>
         </>
@@ -79,3 +180,28 @@ export default async function PlayPage({
     </div>
   );
 }
+
+const LeaderBoardEntry = ({
+  player,
+  score,
+  idx,
+}: {
+  player: Player;
+  score: number;
+  idx: number;
+}) => {
+  return (
+    <div className="flex items-center gap-2">
+      <div className="text-sm">{idx + 1} - </div>
+      <Image
+        height={128}
+        width={128}
+        src={player.image}
+        className="h-8 w-auto object-cover"
+        alt={"Player image"}
+      />
+      <div className="text-sm font-bold">{player.name}:</div>
+      <div className="text-sm">{score}</div>
+    </div>
+  );
+};

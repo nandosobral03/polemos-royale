@@ -1,10 +1,9 @@
 "use client";
-import { type GameEvent } from "@prisma/client";
 import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "@radix-ui/react-icons";
-import { api, RouterOutputs } from "@/trpc/react";
+import { api, type RouterOutputs } from "@/trpc/react";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 import UpdateEventButton from "./update-event-button";
@@ -66,7 +65,10 @@ export default function EventsTable({
       cell: (info) => (
         <div className="flex flex-wrap items-center gap-2">
           {info.row.original.locations.map((location) => (
-            <span className="line-clamp-1 rounded-full bg-gray-200 px-2 py-1 text-xs font-medium text-gray-700">
+            <span
+              className="line-clamp-1 rounded-full bg-gray-200 px-2 py-1 text-xs font-medium text-gray-700"
+              key={location.id}
+            >
               {location.name}
             </span>
           ))}
@@ -76,6 +78,18 @@ export default function EventsTable({
     {
       accessorKey: "hazards",
       header: "Hazards",
+      cell: (info) => (
+        <div className="flex flex-wrap items-center gap-2">
+          {info.row.original.hazards.map((hazard) => (
+            <span
+              className="line-clamp-1 rounded-full bg-gray-200 px-2 py-1 text-xs font-medium text-gray-700"
+              key={hazard.id}
+            >
+              {hazard.name}
+            </span>
+          ))}
+        </div>
+      ),
     },
     {
       accessorKey: "Actions",

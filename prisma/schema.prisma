@@ -40,6 +40,8 @@ model Player {
   defenderOnGame  GameEventLog[]    @relation("GameEventLogDefenders")
 }
 
+
+
 model Sponsor {
   id        Int      @id @default(autoincrement())
   name      String
@@ -67,7 +69,7 @@ model MapHazardSchematic {
 model MapTile {
   id                Int                  @id @default(autoincrement())
   locationId        Int
-  location          MapLocationSchematic @relation(fields: [locationId], references: [id])
+  location          MapLocationSchematic @relation(fields: [locationId], references: [id], onDelete: Cascade)
   hazards           MapHazardSchematic[]
   gameId            Int
   game              Game                 @relation(fields: [gameId], references: [id])
@@ -87,6 +89,7 @@ model GameEvent {
   description       String
   locations         MapLocationSchematic[]
   hazards           MapHazardSchematic[]
+  happenedOnLog     GameEventLog[]
 }
 
 model Game {
@@ -96,6 +99,7 @@ model Game {
   players    Player[]
   gameDayLog GameDayLog[]
 }
+
 
 model GameDayLog {
   id             Int               @id @default(autoincrement())
@@ -131,4 +135,8 @@ model GameEventLog {
   tile                      MapTile    @relation(fields: [tileId], references: [id])
   GameDayLog                GameDayLog @relation(fields: [gameDayLogId], references: [id])
   gameDayLogId              Int
+  event                     GameEvent  @relation(fields: [eventId], references: [id])
+  eventId                   Int
+
+  @@unique([gameDayLogId, eventId])
 }

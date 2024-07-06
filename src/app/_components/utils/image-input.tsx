@@ -3,6 +3,7 @@
 import { env } from "@/env";
 import { toast } from "@/components/ui/use-toast";
 import { useRef } from "react";
+import Image from "next/image";
 
 export default function ImageInput({
   src,
@@ -68,7 +69,9 @@ export default function ImageInput({
         {children ? (
           children
         ) : (
-          <img
+          <Image
+            height={128}
+            width={128}
             src={src}
             alt={alt}
             className="aspect-square h-12 w-auto rounded-md object-cover"
