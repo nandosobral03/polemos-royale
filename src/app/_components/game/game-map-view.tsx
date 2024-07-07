@@ -55,7 +55,7 @@ export default function GameMapView({
                     : "",
 
                   eventLogs.some((el) => el.tileId === position.id)
-                    ? " stroke-red-900 stroke-[0.5] hover:opacity-80"
+                    ? " stroke-primary stroke-[0.5] hover:opacity-80"
                     : "opacity-40",
                 )}
                 onClick={() =>

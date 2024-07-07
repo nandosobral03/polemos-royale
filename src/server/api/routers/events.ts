@@ -7,8 +7,6 @@ const createEventSchema = z.object({
   numberOfDefenders: z.number().min(0),
   hpChangeAttackers: z.number(),
   hpChangeDefenders: z.number(),
-  locationIds: z.array(z.number()),
-  hazardIds: z.array(z.number()),
 });
 
 export const eventsRouter = createTRPCRouter({
@@ -47,7 +45,14 @@ export const eventsRouter = createTRPCRouter({
       });
     }),
   massUploadEvents: publicProcedure
-    .input(z.array(createEventSchema))
+    .input(
+      z.array(
+        createEventSchema.extend({
+          hazardIds: z.array(z.number()),
+          locationIds: z.array(z.number()),
+        }),
+      ),
+    )
     .mutation(async ({ ctx, input }) => {
       const uniqueLocations = new Set(input.map((e) => e.locationIds).flat());
       const uniqueHazards = new Set(input.map((e) => e.hazardIds).flat());

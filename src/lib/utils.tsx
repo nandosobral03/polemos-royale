@@ -18,7 +18,7 @@ export const generateExampleEventDescription = (event: GameEvent) => {
   for (let i = 0; i < event.numberOfDefenders; i++) {
     initialDescription = initialDescription.replaceAll(
       `d${i + 1}`,
-      `<span class="text-green-500">Defender #${i + 1}</span>`,
+      `<span class="text-primary">Defender #${i + 1}</span>`,
     );
   }
   return (
@@ -50,7 +50,7 @@ export const generateEventDescriptionHTML = (
   for (let i = 0; i < event.numberOfDefenders; i++) {
     initialDescription = initialDescription.replaceAll(
       `d${i + 1}`,
-      `<span class="text-green-500">
+      `<span class="text-primary">
         ${playerNames[i]}
       </span>`,
     );

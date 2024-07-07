@@ -54,7 +54,7 @@ export default function UpdateEventButton({
     setOpen(bool);
   };
 
-  const updateEventMutation = api.games.update.useMutation();
+  const updateEventMutation = api.events.update.useMutation();
   const utils = api.useUtils();
   const handleUpdateEvent = async () => {
     await updateEventMutation.mutateAsync({
@@ -85,7 +85,7 @@ export default function UpdateEventButton({
     for (let i = 0; i < event.numberOfDefenders; i++) {
       initialDescription = initialDescription.replaceAll(
         `d${i + 1}`,
-        `<span class="text-green-500">Defender #${i + 1}</span>`,
+        `<span class="text-primary">Defender #${i + 1}</span>`,
       );
     }
     return (
@@ -198,7 +198,7 @@ export default function UpdateEventButton({
                 <span>
                   Attackers HP change:{" "}
                   {parseInt(event.hpChangeAttackers) > 0 ? (
-                    <span className="text-green-500">
+                    <span className="text-primary">
                       +{event.hpChangeAttackers}
                     </span>
                   ) : (
@@ -213,7 +213,7 @@ export default function UpdateEventButton({
                 <span>
                   Defenders HP change:{" "}
                   {parseInt(event.hpChangeDefenders) > 0 ? (
-                    <span className="text-green-500">
+                    <span className="text-primary">
                       +{event.hpChangeDefenders}
                     </span>
                   ) : (

@@ -23,12 +23,12 @@ export default function GameEventCard({
       <CardContent className="flex flex-col items-start gap-3 p-3">
         {event.completedEventDescription}
         {event.attackers.map((p) => (
-          <Link href={`/play/${gameId}/player/${p.id}`} key={p.id}>
+          <Link href={`/games/${gameId}/player/${p.id}`} key={p.id}>
             <PlayerPreview player={p} playerChanges={playerChanges} />
           </Link>
         ))}
         {event.defenders.map((p) => (
-          <Link href={`/play/${gameId}/player/${p.id}`} key={p.id}>
+          <Link href={`/games/${gameId}/player/${p.id}`} key={p.id}>
             <PlayerPreview
               key={p.id}
               player={p}

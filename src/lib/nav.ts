@@ -67,10 +67,11 @@ export const routes: {
     ],
   },
   {
-    path: "/play",
-    name: "Play",
+    path: "/games",
+    name: "Games",
     icon: "game-play",
     description: "Simulate a game and see how fate decides the outcome",
+    autoLinkable: true,
     children: [
       {
         path: "/history",

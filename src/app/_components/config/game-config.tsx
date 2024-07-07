@@ -94,7 +94,7 @@ export default function GameConfig({
       });
       setLoadedDays((d) => d + 1);
     }
-    router.push(`/play/${gameId}/1`);
+    router.push(`/games/${gameId}/1`);
   };
 
   const [currentStep, setCurrentStep] = useState<number>(0);

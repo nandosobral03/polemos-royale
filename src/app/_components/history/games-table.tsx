@@ -14,7 +14,7 @@ export default function GamesTable({
   const handleRowClick = (
     row: Row<RouterOutputs["games"]["getAll"][number]>,
   ) => {
-    router.push(`/play/${row.original.id}`);
+    router.push(`/games/${row.original.id}`);
   };
 
   const columns: ColumnDef<RouterOutputs["games"]["getAll"][number]>[] = [

@@ -29,7 +29,11 @@ export default function PlayerHealthChart({
   ];
 
   return (
-    <TitledCard title="Players alive" className="h-[30vh]">
+    <TitledCard
+      title="Players alive"
+      className="h-[30vh]"
+      titleClassName="text-primary"
+    >
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           width={500}
@@ -50,7 +54,7 @@ export default function PlayerHealthChart({
             dataKey="value"
             name="Players Alive"
             type="monotone"
-            stroke="#8884d8"
+            stroke="var(--primary)"
             strokeWidth={2}
           />
         </LineChart>

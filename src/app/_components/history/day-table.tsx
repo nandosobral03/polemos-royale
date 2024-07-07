@@ -15,7 +15,7 @@ export default function DaysTable({
   const handleRowClick = (
     row: Row<RouterOutputs["games"]["getGameForHistory"]["gameDayLog"][number]>,
   ) => {
-    router.push(`/play/${gameId}/${row.original.day}`);
+    router.push(`/games/${gameId}/${row.original.day}`);
   };
 
   const columns: ColumnDef<

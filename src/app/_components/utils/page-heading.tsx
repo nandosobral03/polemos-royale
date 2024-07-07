@@ -10,7 +10,7 @@ import Link from "next/link";
 const PageHeading = ({ children, title, subtitle }: PageHeadingProps) => (
   <div className="flex flex-col gap-4">
     <div className="flex w-full justify-between gap-4">
-      <h1 className="mb-0 grow text-xl font-medium tracking-tight sm:text-[2rem]">
+      <h1 className="mb-0 mr-auto w-fit border-b-2 border-solid border-primary pb-1 text-xl font-medium tracking-tight sm:text-[2rem]">
         {title}
       </h1>
       {children}
@@ -38,7 +38,7 @@ const PageHeading = ({ children, title, subtitle }: PageHeadingProps) => (
               <>
                 <Link
                   href={wordExists.path}
-                  className="underline brightness-150 hover:brightness-200"
+                  className="text-primary underline hover:brightness-200"
                 >
                   {word}
                 </Link>{" "}

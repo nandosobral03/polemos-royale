@@ -52,7 +52,7 @@ export default function CreateEventButton() {
     setOpen(bool);
   };
 
-  const createEventMutation = api.games.create.useMutation();
+  const createEventMutation = api.events.create.useMutation();
   const handleCreateEvent = async () => {
     await createEventMutation.mutateAsync({
       description: event.description,
@@ -80,7 +80,7 @@ export default function CreateEventButton() {
     for (let i = 0; i < event.numberOfDefenders; i++) {
       initialDescription = initialDescription.replaceAll(
         `d${i + 1}`,
-        `<span class="text-green-500">Defender #${i + 1}</span>`,
+        `<span class="text-primary">Defender #${i + 1}</span>`,
       );
     }
     return (
@@ -193,7 +193,7 @@ export default function CreateEventButton() {
                 <span>
                   Attackers HP change:{" "}
                   {parseInt(event.hpChangeAttackers) > 0 ? (
-                    <span className="text-green-500">
+                    <span className="text-primary">
                       +{event.hpChangeAttackers}
                     </span>
                   ) : (
@@ -208,7 +208,7 @@ export default function CreateEventButton() {
                 <span>
                   Defenders HP change:{" "}
                   {parseInt(event.hpChangeDefenders) > 0 ? (
-                    <span className="text-green-500">
+                    <span className="text-primary">
                       +{event.hpChangeDefenders}
                     </span>
                   ) : (

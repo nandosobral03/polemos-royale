@@ -1,7 +1,4 @@
 import { api } from "@/trpc/server";
-import EventsTable from "../_components/events/events-table";
-import CreateEventButton from "../_components/events/create-event-button";
-import UploadEventsButton from "../_components/events/upload-events";
 import PageHeading from "../_components/utils/page-heading";
 import GamesTable from "../_components/history/games-table";
 

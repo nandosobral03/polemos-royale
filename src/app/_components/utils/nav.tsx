@@ -47,6 +47,7 @@ export default function Nav() {
                             key={route.path}
                             title={route.name}
                             href={route.path}
+                            className="text-primary"
                           >
                             {route.description}
                           </ListItem>
@@ -55,6 +56,7 @@ export default function Nav() {
                               key={child.path}
                               title={child.name}
                               href={child.path}
+                              className="text-primary"
                             >
                               {child.description}
                             </ListItem>
@@ -99,7 +101,9 @@ const ListItem = React.forwardRef<
           )}
           {...props}
         >
-          <div className="text-sm font-medium leading-none">{title}</div>
+          <div className="text-sm font-medium leading-none underline">
+            {title}
+          </div>
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
           </p>

@@ -18,7 +18,7 @@ export default async function Play({
   return (
     <>
       <PageHeading title={`Game #${params.id}`}>
-        <Link href={`/play/${params.id}/${game.gameDayLog.length + 1}`}>
+        <Link href={`/games/${params.id}/${game.gameDayLog.length + 1}`}>
           <Button className="mt-4">View Results</Button>
         </Link>
       </PageHeading>

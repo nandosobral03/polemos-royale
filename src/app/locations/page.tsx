@@ -5,7 +5,7 @@ import LocationCard from "../_components/locations/location-card";
 
 export default async function Locations() {
   const locations = await api.locations.getAll();
-  const events = await api.games.getAll();
+  const events = await api.events.getAll();
   return (
     <>
       <PageHeading

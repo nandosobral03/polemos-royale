@@ -10,7 +10,7 @@ export default async function Hazards() {
     <>
       <PageHeading
         title="Play"
-        subtitle="Cutomize your game before the simulation starts"
+        subtitle="Customize your game before the simulation starts"
       ></PageHeading>
       <div className="flex flex-wrap justify-end gap-4">
         <GameConfig locations={locations} hazards={hazards} teams={teams} />

@@ -44,7 +44,7 @@ export default function PlayerHealthChart({ health }: { health: number[] }) {
             dataKey="health"
             name="Health"
             type="monotone"
-            stroke="#8884d8"
+            stroke="var(--primary)"
             strokeWidth={2}
           />
         </LineChart>

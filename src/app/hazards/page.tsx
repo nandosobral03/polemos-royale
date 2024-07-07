@@ -5,7 +5,7 @@ import CreateHazardButton from "../_components/hazards/create-hazard-button";
 
 export default async function Hazards() {
   const hazards = await api.hazards.getAll();
-  const events = await api.games.getAll();
+  const events = await api.events.getAll();
   return (
     <>
       <PageHeading
