@@ -94,7 +94,6 @@ export default function GameConfig({
       });
       setLoadedDays((d) => d + 1);
     }
-    setLoading(false);
     router.push(`/play/${gameId}/1`);
   };
 

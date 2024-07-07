@@ -292,4 +292,42 @@ export const gamesRouter = createTRPCRouter({
         journey: dayLogs,
       };
     }),
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    const games = await ctx.db.game.findMany({
+      include: {
+        players: true,
+        gameDayLog: true,
+        tiles: {
+          include: {
+            location: {
+              include: { events: true },
+            },
+            hazards: {
+              include: { events: true },
+            },
+          },
+        },
+      },
+    });
+    return games;
+  }),
+  getGameForHistory: publicProcedure
+    .input(z.object({ gameId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const games = await ctx.db.game.findUniqueOrThrow({
+        where: {
+          id: input.gameId,
+        },
+        include: {
+          gameDayLog: {
+            include: {
+              eventLogs: true,
+              playerStatuses: true,
+            },
+          },
+          tiles: true,
+        },
+      });
+      return games;
+    }),
 });

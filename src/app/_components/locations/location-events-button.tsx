@@ -69,7 +69,7 @@ export default function LocationEventButtons({
       events: eventsInLocation.map((e) => e.id),
     });
     await utils.locations.invalidate();
-    await utils.events.invalidate();
+    await utils.games.invalidate();
     router.refresh();
     toast({
       title: "Location updated",

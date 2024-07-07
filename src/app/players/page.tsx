@@ -1,5 +1,5 @@
+import PlayerCard from "../_components/teams/player-card";
 import PageHeading from "../_components/utils/page-heading";
-import PlayerCard from "../_components/player-card";
 import { api } from "@/trpc/server";
 
 export default async function Players() {

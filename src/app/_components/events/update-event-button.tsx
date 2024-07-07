@@ -54,7 +54,7 @@ export default function UpdateEventButton({
     setOpen(bool);
   };
 
-  const updateEventMutation = api.events.update.useMutation();
+  const updateEventMutation = api.games.update.useMutation();
   const utils = api.useUtils();
   const handleUpdateEvent = async () => {
     await updateEventMutation.mutateAsync({
@@ -69,7 +69,7 @@ export default function UpdateEventButton({
       title: "Event updated",
       description: "The event has been updated",
     });
-    await utils.events.invalidate();
+    await utils.games.invalidate();
     router.refresh();
     handleOpenClose(false);
   };

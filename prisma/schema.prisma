@@ -137,6 +137,4 @@ model GameEventLog {
   gameDayLogId              Int
   event                     GameEvent  @relation(fields: [eventId], references: [id])
   eventId                   Int
-
-  @@unique([gameDayLogId, eventId])
 }

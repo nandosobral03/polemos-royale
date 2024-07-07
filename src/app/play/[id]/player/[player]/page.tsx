@@ -1,6 +1,7 @@
 import GameEventCard from "@/app/_components/game/game-event-card";
 import PlayerHealthChart from "@/app/_components/game/player-health-chart";
 import PlayerHexGridMap from "@/app/_components/game/player-hexgrid-map";
+import PageHeading from "@/app/_components/utils/page-heading";
 import TitledCard from "@/components/ui/titled-card";
 import { getPlayerChanges } from "@/lib/utils";
 import { api } from "@/trpc/server";
@@ -46,10 +47,8 @@ export default async function PlayerGameJourneyPage({
   );
 
   return (
-    <div className="flex flex-col items-start justify-center gap-4 overflow-auto">
-      <h1 className="mb-4 text-3xl font-bold">
-        {playerInfo.player.name}&apos;s journey
-      </h1>
+    <>
+      <PageHeading title={`${playerInfo.player.name}'s journey`} />
       <PlayerHealthChart health={health} />
       <PlayerHexGridMap
         gridElements={game.tiles}
@@ -76,6 +75,6 @@ export default async function PlayerGameJourneyPage({
           );
         })}
       </TitledCard>
-    </div>
+    </>
   );
 }

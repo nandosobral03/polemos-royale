@@ -26,21 +26,23 @@ export default function DayVisualization({
   if (!dayInfo || !game) return <div>Not found</div>;
   const playerChanges = getPlayerChanges(dayInfo, prevDay);
   return (
-    <div className="flex w-full flex-col items-center gap-4">
+    <div className="relative flex w-full flex-col items-center gap-4">
       <Button
         onClick={() => setShowMapView(!showMapView)}
-        className="w-xl ml-auto"
+        className="w-xl absolute right-0 top-[-60px] ml-auto"
       >
         {showMapView ? "Hide map" : "Show map"}
       </Button>
       {showMapView ? (
         <>
-          <GameMapView
-            gridElements={game.tiles}
-            eventLogs={dayInfo.eventLogs}
-            selectedHexagon={selectedHexagon}
-            setSelectedHexagon={setSelectedHexagon}
-          />
+          <div className="flex max-h-[60vh] w-full flex-col items-center gap-4">
+            <GameMapView
+              gridElements={game.tiles}
+              eventLogs={dayInfo.eventLogs}
+              selectedHexagon={selectedHexagon}
+              setSelectedHexagon={setSelectedHexagon}
+            />
+          </div>
           <SelectedGameLocation
             isOpen={selectedHexagon !== undefined}
             setIsOpen={() => setSelectedHexagon(undefined)}

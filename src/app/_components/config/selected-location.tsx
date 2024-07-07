@@ -6,7 +6,10 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { type GameLocationConfigType } from "./game-config";
-import { type MapHazardSchematic, type MapLocationSchematic } from "@prisma/client";
+import {
+  type MapHazardSchematic,
+  type MapLocationSchematic,
+} from "@prisma/client";
 import {
   Select,
   SelectContent,
@@ -17,6 +20,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
+import { areSameHexagons } from "@/lib/utils";
 
 export default function SelectedLocation({
   gameConfig,
@@ -44,10 +48,15 @@ export default function SelectedLocation({
       l.s === selectedHexagon?.s,
   );
 
+  if (!selectedHexagon) return null;
+
   const handleAddHazard = (id: number) => {
     const selected = hazards.find((h) => h.id === id);
     if (!selected) return;
-    onHazardsChange([...hazards.map((h) => h.id), id]);
+    const currentHazards =
+      gameConfig.locations.find((l) => areSameHexagons(l, selectedHexagon))!
+        .hazards ?? [];
+    onHazardsChange([...currentHazards.map((h) => h.id), id]);
   };
 
   return (
@@ -104,7 +113,7 @@ export default function SelectedLocation({
               </div>
               <Separator />
               <label htmlFor="name">Hazards</label>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-2">
                 {hexSquare.hazards.map((hazard) => (
                   <div key={hazard.id} className="flex items-center gap-2">
                     <li className="text-sm">{hazard.name}</li>
@@ -129,7 +138,7 @@ export default function SelectedLocation({
                     onValueChange={(value) => handleAddHazard(parseInt(value))}
                     value="0"
                   >
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="mt-4 w-[180px]">
                       Add a hazard
                     </SelectTrigger>
                     <SelectContent>

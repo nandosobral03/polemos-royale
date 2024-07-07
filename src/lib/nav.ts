@@ -38,15 +38,6 @@ export const routes: {
         description:
           "Manage the game sponsors and what teams they have a part in",
       },
-
-      {
-        path: "/stats",
-        name: "Stats",
-        icon: "chart-bar",
-        autoLinkable: true,
-        description:
-          "See historic data about past games, kill counts, winrates, and more",
-      },
     ],
   },
   {

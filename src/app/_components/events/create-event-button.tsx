@@ -52,7 +52,7 @@ export default function CreateEventButton() {
     setOpen(bool);
   };
 
-  const createEventMutation = api.events.create.useMutation();
+  const createEventMutation = api.games.create.useMutation();
   const handleCreateEvent = async () => {
     await createEventMutation.mutateAsync({
       description: event.description,

@@ -72,7 +72,7 @@ export default function HazardEventButtons({
       events: eventsInHazard.map((e) => e.id),
     });
     await utils.hazards.invalidate();
-    await utils.events.invalidate();
+    await utils.games.invalidate();
     router.refresh();
     toast({
       title: "Hazard updated",

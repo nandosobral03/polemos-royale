@@ -31,7 +31,7 @@ export default function UploadEventsButton() {
     }
   };
 
-  const massCreateMutation = api.events.massUploadEvents.useMutation();
+  const massCreateMutation = api.games.massUploadEvents.useMutation();
   const handleCreateTeam = async () => {
     if (!file) return;
     const csv = await file.text();
