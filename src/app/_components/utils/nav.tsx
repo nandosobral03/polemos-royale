@@ -24,7 +24,7 @@ export default function Nav() {
         <div className="flex items-center gap-2">
           <a href="/">
             <Image
-              src="/logo.svg"
+              src="/favicon.png"
               className="h-10 w-auto"
               alt="Logo"
               width={128}

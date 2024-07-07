@@ -66,10 +66,16 @@
 @layer base {
   * {
     @apply border-border;
-    font-family: Outfit, sans-serif !important;
+    @apply font-sans;
   }
 
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.font-serif {
+  font-family: "Crimson Text", serif !important;
+  font-weight: 400;
+  font-style: normal;
 }

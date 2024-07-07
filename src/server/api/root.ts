@@ -1,7 +1,6 @@
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 import { playersRouter, sponsorsRouter, teamsRouter } from "./routers/teams";
 
-import { postRouter } from "@/server/api/routers/post";
 import { eventsRouter } from "./routers/events";
 import { hazardsRouter, locationsRouter } from "./routers/locations";
 import { gamesRouter } from "./routers/game";
@@ -12,7 +11,6 @@ import { gamesRouter } from "./routers/game";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  post: postRouter,
   teams: teamsRouter,
   players: playersRouter,
   sponsors: sponsorsRouter,

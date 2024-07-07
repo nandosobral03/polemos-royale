@@ -17,8 +17,9 @@ const config = {
         "2xl": "1400px",
       },
     },
-    fontFamily: {
-      DEFAULT: "'Outfit', sans-serif",
+    font: {
+      sans: ["Outfit", "sans-serif"],
+      serif: ["Merriweather", "serif"],
     },
     extend: {
       colors: {
